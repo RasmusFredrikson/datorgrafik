@@ -23,7 +23,7 @@ void Answer1(void);
 void Answer2(Position);
 void Answer3(Position);
 void Answer4(Position);
-void Answer5(void);
+void Answer5(Position);
 void Answer6(void);
 void Answer7(void);
 
@@ -47,14 +47,14 @@ void DrawVector(Position& startPos, Vector& v1)
 	glRotatef(a,0.0,0.0,1.0);
 	float space = 0.25;
 	glBegin(GL_LINES);
-		glVertex3f(0.0, 0.0, 0.0);
-		glVertex3f(0.0, length, 0.0);
+	glVertex3f(0.0, 0.0, 0.0);
+	glVertex3f(0.0, length, 0.0);
 
-		glVertex3f(0.0, length, 0.0);
-		glVertex3f(-space, length - (space * 1.5), 0.0);
+	glVertex3f(0.0, length, 0.0);
+	glVertex3f(-space, length - (space * 1.5), 0.0);
 
-		glVertex3f(0.0, length, 0.0);
-		glVertex3f(space, length - (space * 1.5), 0.0);
+	glVertex3f(0.0, length, 0.0);
+	glVertex3f(space, length - (space * 1.5), 0.0);
 	glEnd();
 	glPopMatrix();
 }
@@ -62,131 +62,131 @@ void DrawVector(Position& startPos, Vector& v1)
 //our main routine
 int main(int argc, char *argv[])
 {
-  //Initialise Glut and create a window
-  glutInit(&argc, argv);
-  //sets up our display mode
-  //here we've selected an RGBA display with depth testing 
-  //and double buffering enabled
-  glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE);
-  //create a window and pass through the windows title
-  glutCreateWindow("Basic Glut Application");
+	//Initialise Glut and create a window
+	glutInit(&argc, argv);
+	//sets up our display mode
+	//here we've selected an RGBA display with depth testing 
+	//and double buffering enabled
+	glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE);
+	//create a window and pass through the windows title
+	glutCreateWindow("Basic Glut Application");
 
-  //run our own drawing initialisation routine
-  init_drawing();
+	//run our own drawing initialisation routine
+	init_drawing();
 
-  //tell glut the names of our callback functions point to our 
-  //functions that we defined at the start of this file
-  glutReshapeFunc(reshape);
-  glutKeyboardFunc(key);
-  glutIdleFunc(idle);
-  glutDisplayFunc(DisplayScene);
+	//tell glut the names of our callback functions point to our 
+	//functions that we defined at the start of this file
+	glutReshapeFunc(reshape);
+	glutKeyboardFunc(key);
+	glutIdleFunc(idle);
+	glutDisplayFunc(DisplayScene);
 
-  //request a window size of 600 x 600
-  glutInitWindowSize(600,600);
-  glutReshapeWindow(600,600);
+	//request a window size of 600 x 600
+	glutInitWindowSize(600,600);
+	glutReshapeWindow(600,600);
 
-  //go into the main loop
-  //this loop won't terminate until the user exits the 
-  //application
-  glutMainLoop();
+	//go into the main loop
+	//this loop won't terminate until the user exits the 
+	//application
+	glutMainLoop();
 
-  return 0;
+	return 0;
 }
 
 
 
 /*****************************************************************************
- DisplayScene()
+DisplayScene()
 
- The work of the application is done here. This is called by glut whenever the 
+The work of the application is done here. This is called by glut whenever the 
 //window needs to be redrawn
 *****************************************************************************/
 
 void DisplayScene(void)
 {
-  //clear the current window
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  //make changes to the modelview matrix
-  glMatrixMode(GL_MODELVIEW);
-  //initialise the modelview matrix to the identity matrix
-  glLoadIdentity();
+	//clear the current window
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//make changes to the modelview matrix
+	glMatrixMode(GL_MODELVIEW);
+	//initialise the modelview matrix to the identity matrix
+	glLoadIdentity();
 
-  glTranslatef(-3.0,-3.0,-10.0);
-  
-  /*glColor3f(1.0,0.0,0.0);
-  glBegin(GL_POINTS);
+	glTranslatef(-3.0,-3.0,-10.0);
+
+	/*glColor3f(1.0,0.0,0.0);
+	glBegin(GL_POINTS);
 	glVertex3f(0.0,0.0,-5.0);
-  glEnd();*/
+	glEnd();*/
 
-  GLfloat yellow[4] = { 1.0f, 1.0f, 0.2f, 1.0f };
-  GLfloat blue[4] = { 0.2f, 0.2f, 1.0f, 1.0f };
-  GLfloat green[4] = { 0.2f, 1.0f, 0.2f, 1.0f };
-Position origin;
-origin.x = origin.y = origin.z = 0.0;
+	GLfloat yellow[4] = { 1.0f, 1.0f, 0.2f, 1.0f };
+	GLfloat blue[4] = { 0.2f, 0.2f, 1.0f, 1.0f };
+	GLfloat green[4] = { 0.2f, 1.0f, 0.2f, 1.0f };
+	Position origin;
+	origin.x = origin.y = origin.z = 0.0;
 
-  //define a position and a vector
-  Position p1;
-  p1.x = 1.0; p1.y = 1.0; p1.z = 0.0;
-  Vector v1(4.0, 4.0, 0.0);
+	//define a position and a vector
+	Position p1;
+	p1.x = 1.0; p1.y = 1.0; p1.z = 0.0;
+	Vector v1(4.0, 4.0, 0.0);
 
-  //draw the vector at position
-  glDisable(GL_LINE_STIPPLE);
-  glLineWidth(1.0);
-  glColor3f(1.0,1.0,0.0);
-  //DrawVector(p1,v1);
+	//draw the vector at position
+	glDisable(GL_LINE_STIPPLE);
+	glLineWidth(1.0);
+	glColor3f(1.0,1.0,0.0);
+	//DrawVector(p1,v1);
 
-  //draw a red horizontal line, one unit long
-  glLineWidth(3.0);
-  glColor3f(1.0,0.0,0.0);
-  glPushMatrix();
-	  glTranslatef(0.0, 0.0, 0.0);
-	  glBegin(GL_LINES);
-		glVertex2f(0.0,0.0);
-		glVertex2f(1.0,0.0);
-	  glEnd();
-  glPopMatrix();
+	//draw a red horizontal line, one unit long
+	glLineWidth(3.0);
+	glColor3f(1.0,0.0,0.0);
+	glPushMatrix();
+	glTranslatef(0.0, 0.0, 0.0);
+	glBegin(GL_LINES);
+	glVertex2f(0.0,0.0);
+	glVertex2f(1.0,0.0);
+	glEnd();
+	glPopMatrix();
 
-  //draw a green vertical line, one unit high
-  glLineWidth(3.0);
-  glColor3f(0.0,0.0,1.0);
-  glPushMatrix();
-	  glBegin(GL_LINES);
-		glVertex2f(0.0,0.0);
-		glVertex2f(0.0,1.0);
-	  glEnd();
-  glPopMatrix();
+	//draw a green vertical line, one unit high
+	glLineWidth(3.0);
+	glColor3f(0.0,0.0,1.0);
+	glPushMatrix();
+	glBegin(GL_LINES);
+	glVertex2f(0.0,0.0);
+	glVertex2f(0.0,1.0);
+	glEnd();
+	glPopMatrix();
 
-  //draw a white point at the origin
-  glPointSize(2.0);
-  glColor3f(1.0,1.0,1.0);
-  glPushMatrix();
-	  glTranslatef(0.0, 0.0, 0.0);
-	  glBegin(GL_POINTS);
-		glVertex2f(0.0,0.0);
-	  glEnd();
-  glPopMatrix();
+	//draw a white point at the origin
+	glPointSize(2.0);
+	glColor3f(1.0,1.0,1.0);
+	glPushMatrix();
+	glTranslatef(0.0, 0.0, 0.0);
+	glBegin(GL_POINTS);
+	glVertex2f(0.0,0.0);
+	glEnd();
+	glPopMatrix();
 
-  switch (answer) {
+	switch (answer) {
 	case 1: Answer1();
-			break;
+		break;
 	case 2: Answer2(origin);
-			break;
+		break;
 	case 3: Answer3(origin);
-			break;
+		break;
 	case 4: Answer4(origin);
-			break;
-	case 5: Answer5();
-			break;
+		break;
+	case 5: Answer5(origin);
+		break;
 	case 6: Answer6();
-			break;
+		break;
 	case 7: Answer7();
-			break;
-  }
+		break;
+	}
 
-  //flush what we've drawn to the buffer
-  glFlush();
-  //swap the back buffer with the front buffer
-  glutSwapBuffers();
+	//flush what we've drawn to the buffer
+	glFlush();
+	//swap the back buffer with the front buffer
+	glutSwapBuffers();
 }
 
 void Answer1() {
@@ -241,29 +241,48 @@ void Answer3(Position origin) {
 void Answer4(Position origin) {
 	/*b4. Determine, using the dot product, if the vectors (4.0,4.0,0.0) and (-2.0, 3.0, 0.0) point in the same direction. Draw both vectors starting at the origin.*/
 	//define a position and a vector
-	Position p1;
-	p1.x = 1.0; p1.y = 2.0; p1.z = 0.0;
-	Vector v1(4.0, 2.0, 0.0);
+	Vector v1(4.0,4.0,0.0);
+	Vector v2(-2.0, 3.0, 0.0);
+
+	float dotProduct = v1.getDotProduct(v2);
+	if(dotProduct > 0)
+		std::cout << "The vectors point in the same direction" << std::endl;
+	else if(dotProduct < 0)
+		std::cout << "The vectors don't point in the same direction" << std::endl;
+	else if(dotProduct == 0)
+		std::cout << "The vectors are perpendicular" << std::endl;
 
 	//draw the vector at position
 	glDisable(GL_LINE_STIPPLE);
 	glLineWidth(1.0);
 	glColor3f(1.0,1.0,0.0);
-	DrawVector(p1,v1);
+	DrawVector(origin,v1);
+	DrawVector(origin,v2);
 }
 
-void Answer5() {
+void Answer5(Position origin) {
 	/*b5. Project the point (5.0,4.0,0.0) onto the line (0.0,0.0,0.0) to (3.0,9.0,0.0).*/
-	//define a position and a vector
-	Position p1;
-	p1.x = 1.0; p1.y = 2.0; p1.z = 0.0;
-	Vector v1(4.0, 2.0, 0.0);
+	//define 2 vectors
+	Vector v1(3.0,9.0,0.0);
+	Vector v2(5.0,4.0,0.0);
 
 	//draw the vector at position
 	glDisable(GL_LINE_STIPPLE);
-	glLineWidth(1.0);
+	glLineWidth(2.0);
+	glColor3f(1.0,0.0,0.0);
+	DrawVector(origin,v1);
+	glColor3f(0.0,1.0,0.0);
+	DrawVector(origin,v2);
+
+	v1.setMagnitude(v2.getMagnitude());
+	//draw a yellow point at the projection
+	glPointSize(5.0);
 	glColor3f(1.0,1.0,0.0);
-	DrawVector(p1,v1);
+	glPushMatrix();
+	glBegin(GL_POINTS);
+	glVertex2f(v1.x,v1.y);
+	glEnd();
+	glPopMatrix();
 }
 
 void Answer6() {
@@ -299,20 +318,20 @@ void Answer7() {
 //else to do
 void idle(void)
 {
-  //this is a good place to do animation
-  //since there are no animations in this test, we can leave 
-  //idle() empty
+	//this is a good place to do animation
+	//since there are no animations in this test, we can leave 
+	//idle() empty
 }
 
 //key callback function - called whenever the user presses a 
 //key
 void key(unsigned char k, int x, int y)
 {
-  switch(k)
-  {
-    case 27: //27 is the ASCII code for the ESCAPE key
-     exit(0);
-      break;
+	switch(k)
+	{
+	case 27: //27 is the ASCII code for the ESCAPE key
+		exit(0);
+		break;
 	case 49:
 		answer = 1;
 		DisplayScene();
@@ -342,38 +361,38 @@ void key(unsigned char k, int x, int y)
 		DisplayScene();
 		break;
 
-  }
+	}
 }
 
 //reshape callback function - called when the window size changed
 void reshape(int width, int height)
 {
-  //set the viewport to be the same width and height as the window
-  glViewport(0,0,width, height);
-  //make changes to the projection matrix
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
+	//set the viewport to be the same width and height as the window
+	glViewport(0,0,width, height);
+	//make changes to the projection matrix
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
 
-  //set up our projection type
-  //we'll be using a perspective projection, with a 90 degree 
-  //field of view
-  gluPerspective(45.0, (float) width / (float) height, 1.0, 100.0);
-  //redraw the view during resizing
-  DisplayScene();
+	//set up our projection type
+	//we'll be using a perspective projection, with a 90 degree 
+	//field of view
+	gluPerspective(45.0, (float) width / (float) height, 1.0, 100.0);
+	//redraw the view during resizing
+	DisplayScene();
 }
 
 //set up OpenGL before we do any drawing
 //this function is only called once at the start of the program
 void init_drawing(void)
 {
-  //blend colours across the surface of the polygons
-  //another mode to try is GL_FLAT which is flat shading
-  glShadeModel(GL_SMOOTH);
-  //turn lighting off
-  glDisable(GL_LIGHTING);
-  //enable OpenGL hidden surface removal
-  //glDepthFunc(GL_LEQUAL);
-  //glEnable(GL_DEPTH_TEST);
+	//blend colours across the surface of the polygons
+	//another mode to try is GL_FLAT which is flat shading
+	glShadeModel(GL_SMOOTH);
+	//turn lighting off
+	glDisable(GL_LIGHTING);
+	//enable OpenGL hidden surface removal
+	//glDepthFunc(GL_LEQUAL);
+	//glEnable(GL_DEPTH_TEST);
 
-  //glClearColor(1.0,0.0,0.0,0.0);
+	//glClearColor(1.0,0.0,0.0,0.0);
 }
