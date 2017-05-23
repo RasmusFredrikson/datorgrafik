@@ -124,16 +124,22 @@ void DisplayScene(void)
 	Position origin;
 	origin.x = origin.y = origin.z = 0.0;
 
-	//define a position and a vector
-	Position p1;
-	p1.x = 1.0; p1.y = 1.0; p1.z = 0.0;
-	Vector v1(4.0, 4.0, 0.0);
-
-	//draw the vector at position
-	glDisable(GL_LINE_STIPPLE);
-	glLineWidth(1.0);
-	glColor3f(1.0,1.0,0.0);
-	//DrawVector(p1,v1);
+	switch (answer) {
+	case 1: Answer1();
+		break;
+	case 2: Answer2(origin);
+		break;
+	case 3: Answer3(origin);
+		break;
+	case 4: Answer4(origin);
+		break;
+	case 5: Answer5(origin);
+		break;
+	case 6: Answer6();
+		break;
+	case 7: Answer7();
+		break;
+	}
 
 	//draw a red horizontal line, one unit long
 	glLineWidth(3.0);
@@ -166,22 +172,6 @@ void DisplayScene(void)
 	glEnd();
 	glPopMatrix();
 
-	switch (answer) {
-	case 1: Answer1();
-		break;
-	case 2: Answer2(origin);
-		break;
-	case 3: Answer3(origin);
-		break;
-	case 4: Answer4(origin);
-		break;
-	case 5: Answer5(origin);
-		break;
-	case 6: Answer6();
-		break;
-	case 7: Answer7();
-		break;
-	}
 
 	//flush what we've drawn to the buffer
 	glFlush();
@@ -189,8 +179,8 @@ void DisplayScene(void)
 	glutSwapBuffers();
 }
 
+/*b1. Place the vector (4.0, 2.0, 0.0) at position (1.0,2.0,0.0).*/
 void Answer1() {
-	/*b1. Place the vector (4.0, 2.0, 0.0) at position (1.0,2.0,0.0).*/
 	//define a position and a vector
 	Position p1;
 	p1.x = 1.0; p1.y = 2.0; p1.z = 0.0;
@@ -203,8 +193,8 @@ void Answer1() {
 	DrawVector(p1,v1);
 }
 
+/*b2. Given the vector (4.0, 2.0, 0.0) starting at the origin, add the vector (-2.0, 3.0, 0.0) and map the final position.*/
 void Answer2(Position origin) {
-	/*b2. Given the vector (4.0, 2.0, 0.0) starting at the origin, add the vector (-2.0, 3.0, 0.0) and map the final position.*/
 	//define 3 vectors
 	Vector v1(4.0, 2.0, 0.0);
 	Vector v2(-2.0,3.0,0.0);
@@ -217,8 +207,8 @@ void Answer2(Position origin) {
 	DrawVector(origin,v3);
 }
 
+/*b3. Find the angle between the vectors (0.0,1.0,0.0) and (0.707,0.707,0.0). Draw both vectors starting at the origin.*/
 void Answer3(Position origin) {
-	/*b3. Find the angle between the vectors (0.0,1.0,0.0) and (0.707,0.707,0.0). Draw both vectors starting at the origin.*/
 	//define a position and a vector
 	Vector v1(0.0, 1.0, 0.0);
 	Vector v2(0.707,0.707,0.0);
@@ -238,8 +228,8 @@ void Answer3(Position origin) {
 
 }
 
+/*b4. Determine, using the dot product, if the vectors (4.0,4.0,0.0) and (-2.0, 3.0, 0.0) point in the same direction. Draw both vectors starting at the origin.*/
 void Answer4(Position origin) {
-	/*b4. Determine, using the dot product, if the vectors (4.0,4.0,0.0) and (-2.0, 3.0, 0.0) point in the same direction. Draw both vectors starting at the origin.*/
 	//define a position and a vector
 	Vector v1(4.0,4.0,0.0);
 	Vector v2(-2.0, 3.0, 0.0);
@@ -260,8 +250,8 @@ void Answer4(Position origin) {
 	DrawVector(origin,v2);
 }
 
+/*b5. Project the point (5.0,4.0,0.0) onto the line (0.0,0.0,0.0) to (3.0,9.0,0.0).*/
 void Answer5(Position origin) {
-	/*b5. Project the point (5.0,4.0,0.0) onto the line (0.0,0.0,0.0) to (3.0,9.0,0.0).*/
 	//define 2 vectors
 	Vector v1(3.0,9.0,0.0);
 	Vector v2(5.0,4.0,0.0);
@@ -285,32 +275,53 @@ void Answer5(Position origin) {
 	glPopMatrix();
 }
 
+/*b6. Find the angle between the line from (1.0,8.0,0.0) to (5.0,4.0,0.0) and the line from (3.0,0.0,0.0) to (-6.0,0.0,0.0)*/
 void Answer6() {
-	/*b6. Find the angle between the line from (1.0,8.0,0.0) to (5.0,4.0,0.0) and the line from (3.0,0.0,0.0) to (-6.0,0.0,0.0)*/
-	//define a position and a vector
+	//define two positions and vectors
 	Position p1;
-	p1.x = 1.0; p1.y = 2.0; p1.z = 0.0;
-	Vector v1(4.0, 2.0, 0.0);
+	p1.x = 1.0; p1.y = 8.0; p1.z = 0.0;
+	Position p2;
+	p2.x = 3.0; p2.y = 0.0; p2.z = 0.0;
+
+	Vector v1(5.0-1.0,4.0-8.0,0.0);
+	Vector v2(-6.0-3.0,0.0,0.0);
+
+	float cosAngle = v1.getDotProduct(v2)/(v1.getMagnitude()*v2.getMagnitude());
+	RAD2DEG(cos(cosAngle));
+	std::cout << "cosAngle: " << cosAngle << std::endl;
+	std::cout << "cos(cosAngle): " << cos(cosAngle) << std::endl;
+	std::cout << "Angle: " << RAD2DEG(cos(cosAngle)) << std::endl;
 
 	//draw the vector at position
 	glDisable(GL_LINE_STIPPLE);
 	glLineWidth(1.0);
 	glColor3f(1.0,1.0,0.0);
 	DrawVector(p1,v1);
+	DrawVector(p2,v2);
 }
 
+/*b7. Determine the closest point on the line from (-2.5, -2.0, 0.0) to (5.0, -2.0, 0.0) to the position (8.0,3.0, 0.0).*/
 void Answer7() {
-	/*b7. Determine the closest point on the line from (-2.5, -2.0, 0.0) to (5.0, -2.0, 0.0) to the position (8.0,3.0, 0.0).*/
-	//define a position and a vector
+	//define 2 vectors
+	Vector v1(5.0+2.5,-2.0+2.0,0.0);
+
 	Position p1;
-	p1.x = 1.0; p1.y = 2.0; p1.z = 0.0;
-	Vector v1(4.0, 2.0, 0.0);
+	p1.x = -2.5; p1.y = -2.0; p1.z = 0.0;
 
 	//draw the vector at position
 	glDisable(GL_LINE_STIPPLE);
-	glLineWidth(1.0);
-	glColor3f(1.0,1.0,0.0);
+	glLineWidth(2.0);
+	glColor3f(1.0,0.0,0.0);
 	DrawVector(p1,v1);
+
+	//draw a yellow point at the projection
+	glPointSize(5.0);
+	glColor3f(1.0,1.0,0.0);
+	glPushMatrix();
+	glBegin(GL_POINTS);
+	glVertex2f(8.0,3.0);
+	glEnd();
+	glPopMatrix();
 }
 
 
