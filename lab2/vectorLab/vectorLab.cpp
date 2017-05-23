@@ -62,6 +62,8 @@ void DrawVector(Position& startPos, Vector& v1)
 //our main routine
 int main(int argc, char *argv[])
 {
+	
+	std::cout << "Press a key between 1-7 to see answer for corresponding question. Press esc to quit." << std::endl;
 	//Initialise Glut and create a window
 	glutInit(&argc, argv);
 	//sets up our display mode
@@ -181,6 +183,7 @@ void DisplayScene(void)
 
 /*b1. Place the vector (4.0, 2.0, 0.0) at position (1.0,2.0,0.0).*/
 void Answer1() {
+	std::cout << "b1. Place the vector (4.0, 2.0, 0.0) at position (1.0,2.0,0.0). \n\n\n\n" << std::endl;
 	//define a position and a vector
 	Position p1;
 	p1.x = 1.0; p1.y = 2.0; p1.z = 0.0;
@@ -195,6 +198,7 @@ void Answer1() {
 
 /*b2. Given the vector (4.0, 2.0, 0.0) starting at the origin, add the vector (-2.0, 3.0, 0.0) and map the final position.*/
 void Answer2(Position origin) {
+	std::cout << "b2. Given the vector (4.0, 2.0, 0.0) starting at the origin, add the vector (-2.0, 3.0, 0.0) and map the final position. \n\n\n\n" << std::endl;
 	//define 3 vectors
 	Vector v1(4.0, 2.0, 0.0);
 	Vector v2(-2.0,3.0,0.0);
@@ -209,6 +213,7 @@ void Answer2(Position origin) {
 
 /*b3. Find the angle between the vectors (0.0,1.0,0.0) and (0.707,0.707,0.0). Draw both vectors starting at the origin.*/
 void Answer3(Position origin) {
+	std::cout << "b3. Find the angle between the vectors (0.0,1.0,0.0) and (0.707,0.707,0.0). Draw both vectors starting at the origin. \n" << std::endl;
 	//define a position and a vector
 	Vector v1(0.0, 1.0, 0.0);
 	Vector v2(0.707,0.707,0.0);
@@ -217,7 +222,7 @@ void Answer3(Position origin) {
 	RAD2DEG(cos(cosAngle));
 	std::cout << "cosAngle: " << cosAngle << std::endl;
 	std::cout << "cos(cosAngle): " << cos(cosAngle) << std::endl;
-	std::cout << "Angle: " << RAD2DEG(cos(cosAngle)) << std::endl;
+	std::cout << "Angle:" << RAD2DEG(cos(cosAngle))  << "\n\n\n" << std::endl;
 
 	//draw the vector at position
 	glDisable(GL_LINE_STIPPLE);
@@ -230,17 +235,18 @@ void Answer3(Position origin) {
 
 /*b4. Determine, using the dot product, if the vectors (4.0,4.0,0.0) and (-2.0, 3.0, 0.0) point in the same direction. Draw both vectors starting at the origin.*/
 void Answer4(Position origin) {
+	std::cout << "b4. Determine, using the dot product, if the vectors (4.0,4.0,0.0) and (-2.0, 3.0, 0.0) point in the same direction. Draw both vectors starting at the origin. \n" << std::endl;
 	//define a position and a vector
 	Vector v1(4.0,4.0,0.0);
 	Vector v2(-2.0, 3.0, 0.0);
 
 	float dotProduct = v1.getDotProduct(v2);
 	if(dotProduct > 0)
-		std::cout << "The vectors point in the same direction" << std::endl;
+		std::cout << "The vectors point in the same direction \n\n\n" << std::endl;
 	else if(dotProduct < 0)
-		std::cout << "The vectors don't point in the same direction" << std::endl;
+		std::cout << "The vectors don't point in the same direction \n\n\n" << std::endl;
 	else if(dotProduct == 0)
-		std::cout << "The vectors are perpendicular" << std::endl;
+		std::cout << "The vectors are perpendicular \n\n\n" << std::endl;
 
 	//draw the vector at position
 	glDisable(GL_LINE_STIPPLE);
@@ -252,6 +258,7 @@ void Answer4(Position origin) {
 
 /*b5. Project the point (5.0,4.0,0.0) onto the line (0.0,0.0,0.0) to (3.0,9.0,0.0).*/
 void Answer5(Position origin) {
+	std::cout << "b5. Project the point (5.0,4.0,0.0) onto the line (0.0,0.0,0.0) to (3.0,9.0,0.0). \n\n\n\n" << std::endl;
 	//define 2 vectors
 	Vector v1(3.0,9.0,0.0);
 	Vector v2(5.0,4.0,0.0);
@@ -277,6 +284,7 @@ void Answer5(Position origin) {
 
 /*b6. Find the angle between the line from (1.0,8.0,0.0) to (5.0,4.0,0.0) and the line from (3.0,0.0,0.0) to (-6.0,0.0,0.0)*/
 void Answer6() {
+	std::cout << "b6. Find the angle between the line from (1.0,8.0,0.0) to (5.0,4.0,0.0) and the line from (3.0,0.0,0.0) to (-6.0,0.0,0.0) \n" << std::endl;
 	//define two positions and vectors
 	Position p1;
 	p1.x = 1.0; p1.y = 8.0; p1.z = 0.0;
@@ -290,7 +298,7 @@ void Answer6() {
 	RAD2DEG(cos(cosAngle));
 	std::cout << "cosAngle: " << cosAngle << std::endl;
 	std::cout << "cos(cosAngle): " << cos(cosAngle) << std::endl;
-	std::cout << "Angle: " << RAD2DEG(cos(cosAngle)) << std::endl;
+	std::cout << "Angle: " << RAD2DEG(cos(cosAngle)) << "\n\n\n" << std::endl;
 
 	//draw the vector at position
 	glDisable(GL_LINE_STIPPLE);
@@ -302,24 +310,40 @@ void Answer6() {
 
 /*b7. Determine the closest point on the line from (-2.5, -2.0, 0.0) to (5.0, -2.0, 0.0) to the position (8.0,3.0, 0.0).*/
 void Answer7() {
-	//define 2 vectors
-	Vector v1(5.0+2.5,-2.0+2.0,0.0);
-
+	std::cout << "b7. Determine the closest point on the line from p1(-2.5, -2.0, 0.0) to p2(5.0, -2.0, 0.0) to the position (8.0,3.0, 0.0).\n" << std::endl;
 	Position p1;
 	p1.x = -2.5; p1.y = -2.0; p1.z = 0.0;
+	Position p2;
+	p2.x = 5.0; p2.y = -2.0; p1.z = 0.0;
+
+	Position p3;
+	p3.x = 8.0; p3.y = 3.0; p3.z = 0.0;
+
+	//define 2 vectors
+	Vector v1(7.5,0.0,0.0);
+	Vector v2(0.0,-100,0.0);
+
+	//Since the perpendicular vector doesn't interesect the point the shortest distance is from either of the end points
+	if (abs(p3.x-p1.x + p3.y-p1.y) < abs(p3.x-p2.x + p3.y-p2.y))
+		std::cout << "p1 is closest to p3 \n\n\n" << std::endl;
+	else
+		std::cout << "p2 is closest to p3 \n\n\n" << std::endl;
+
+	
 
 	//draw the vector at position
 	glDisable(GL_LINE_STIPPLE);
 	glLineWidth(2.0);
 	glColor3f(1.0,0.0,0.0);
 	DrawVector(p1,v1);
+	DrawVector(p3,v2);
 
 	//draw a yellow point at the projection
 	glPointSize(5.0);
 	glColor3f(1.0,1.0,0.0);
 	glPushMatrix();
 	glBegin(GL_POINTS);
-	glVertex2f(8.0,3.0);
+	glVertex2f(p3.x,p3.y);
 	glEnd();
 	glPopMatrix();
 }
