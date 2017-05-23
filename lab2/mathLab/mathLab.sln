@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26430.6
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "vectorLab", "vectorLab.vcxproj", "{0976420A-60B1-4FFB-9D3C-31AA0B756235}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mathLab", "vectorLab.vcxproj", "{0976420A-60B1-4FFB-9D3C-31AA0B756235}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -3,4 +3,7 @@ CgLab1/CMakeLists.txt
 CgLab1/SDLauxiliary.h
 CgLab1/build/
 CgLab1/glm/
-lab2/vectorLab/Debug/
+*Debug/
+lab2/*/*.htm
+lab2/*/*.dll
+*.vs
