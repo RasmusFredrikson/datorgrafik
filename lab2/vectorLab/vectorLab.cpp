@@ -113,7 +113,7 @@ void DisplayScene(void)
 	//initialise the modelview matrix to the identity matrix
 	glLoadIdentity();
 
-	glTranslatef(-3.0,-3.0,-10.0);
+	glTranslatef(-1.0,-1.0,-10.0);
 
 	/*glColor3f(1.0,0.0,0.0);
 	glBegin(GL_POINTS);

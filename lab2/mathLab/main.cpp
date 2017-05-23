@@ -1,4 +1,4 @@
-#define WIN32_LEAN_AND_MEAN
+﻿#define WIN32_LEAN_AND_MEAN
 
 #pragma comment(lib, "opengl32.lib")
 #pragma comment(lib, "glu32.lib")
@@ -12,6 +12,7 @@
 
 #include "myvector.h"
 #include "mymatrix.h"
+
 using namespace MyMathLab;
 
 #include "stdlib.h"
@@ -70,9 +71,22 @@ void draw(void)
   
   //***DO ALL YOUR DRAWING HERE****//
 
+  glLoadIdentity(); //move the current origin to the center of the screen,as reset of position.
+  glTranslatef(-1.5f, 0.0f, -6.0f);
+  glBegin(GL_TRIANGLES);
+  glVertex3f(0.0f, 0.0f, 0.0f);
+  glVertex3f(1.0f, 0.0f, 0.0f);
+  glVertex3f(0.0f, 1.0f, 0.0f);
+  glEnd();
 
-
-
+  glLoadIdentity(); //move the current origin to the center of the screen,as reset of position.
+  glRotatef(45, 0.0f, 0.0f, 1.0f); //drawing the second triangle rotated around z−axis with 45 degrees.
+  glTranslatef(0.0f, 0.0f, -6.0f);
+  glBegin(GL_TRIANGLES);
+  glVertex3f(0.0f, 0.0f, 0.0f);
+  glVertex3f(1.0f, 0.0f, 0.0f);
+  glVertex3f(0.0f, 1.0f, 0.0f);
+  glEnd();
 
 
   //flush what we've drawn to the buffer
