@@ -79,35 +79,38 @@ void draw(void)
   //make changes to the modelview matrix
   glMatrixMode(GL_MODELVIEW);
   //initialise the modelview matrix to the identity matrix
-  //glLoadIdentity();
+  glLoadIdentity();
 
   //Initialize origin with identityMatrix
   glTranslatef(0.0, 0.0, -10.0);
 
-  GLfloat myIdentityMatrix[16] = {
-	  1.0,0.0,0.0,0.0,
-	  0.0,1.0,0.0,0.0,
-	  0.0,0.0,-10.0,0.0,
-	  0.0,0.0,0.0,1.0
-  };
-  glMatrixMode(GL_MODELVIEW);
-  glLoadMatrixf(myIdentityMatrix);
+  //Comment out row 87-100 and use the right translation in each draw_square to see solution
+  //to task 1-3
+  //GLfloat myIdentityMatrix[16] = {
+	 // 1.0,0.0,0.0,0.0,
+	 // 0.0,1.0,0.0,0.0,
+	 // 0.0,0.0,-10.0,0.0,
+	 // 0.0,0.0,0.0,1.0
+  //};
+  //glMatrixMode(GL_MODELVIEW);
+  //glLoadMatrixf(myIdentityMatrix);
 
-  //Initialize origin with myIdentityMatrix
-  glTranslatef(0.0, 0.0, 1.0);
+  ////Initialize origin with myIdentityMatrix
+  //glTranslatef(0.0, 0.0, 1.0);
 
 
   //***DO ALL YOUR DRAWING HERE
 
   //Draw first square
   glPushMatrix();
-  glTranslatef(1.0, 1.0, 0.5);
+  glTranslatef(1.0, 1.0, -5.0); //Translation for task 1-3
+  //glTranslatef(1.0, 1.0, 0.5); //Translation for task 4-5
   if (rotateAlongVertice) {
 	  glRotatef(degrees, 1.0, 0.0, 0.0);
 	  glTranslatef(0.0, 1.0, 0.0);
   }
   else {
-	  glMultMatrixf(rotationMatrix);
+	  glMultMatrixf(rotationMatrix); //Solution 5
 	  //glRotatef(degrees, 0.0, 0.0, 1.0);
   }
   draw_square();
@@ -116,14 +119,15 @@ void draw(void)
 
   //Draw second square
   glPushMatrix();
-  glTranslatef(-1.0, 1.0, 0.5);
+  glTranslatef(-1.0, 1.0, -5.0); //Translation for task 1-3
+  //glTranslatef(-1.0, 1.0, 0.5); //Translation for task 4-5
   if (rotateAlongVertice) {
 	  glRotatef(degrees, -1.0, 0.0, 0.0);
 	  glTranslatef(0.0, 1.0, 0.0);
 	  rotateAlongVertice = false;
   }
   else
-	  glRotatef(degrees, 0.0, 0.0, 1.0);
+	  glRotatef(degrees, 0.0, 0.0, 1.0); //Solution 2
   draw_square();
   glPopMatrix();
 
