@@ -113,7 +113,7 @@ void DisplayScene(void)
 	//initialise the modelview matrix to the identity matrix
 	glLoadIdentity();
 
-	glTranslatef(-1.0,-1.0,-10.0);
+	glTranslatef(-1.0,-1.0,-20.0);
 
 	/*glColor3f(1.0,0.0,0.0);
 	glBegin(GL_POINTS);
@@ -321,7 +321,7 @@ void Answer7() {
 
 	//define 2 vectors
 	Vector v1(7.5,0.0,0.0);
-	Vector v2(0.0,-100,0.0);
+	Vector v2(0.0,-10,0.0);
 
 	//Since the perpendicular vector doesn't interesect the point the shortest distance is from either of the end points
 	if (abs(p3.x-p1.x + p3.y-p1.y) < abs(p3.x-p2.x + p3.y-p2.y))
