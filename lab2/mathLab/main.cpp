@@ -12,6 +12,7 @@
 
 #include "myvector.h"
 #include "mymatrix.h"
+#include <iostream>
 
 using namespace MyMathLab;
 
@@ -23,6 +24,17 @@ void idle(void);    //what to do when nothing is happening
 void key(unsigned char k, int x, int y);  //handle key presses
 void reshape(int width, int height);      //when the window is resized
 void init_drawing(void);                  //drawing intialisation
+void draw_square(void);
+
+//Global Variables
+bool rotateAlongVertice = false;
+float degrees = 0;
+GLfloat rotationMatrix[16] = {
+	cos(DEG2RAD(degrees)),-sin(DEG2RAD(degrees)),0.0,0.0,
+	sin(DEG2RAD(degrees)),cos(DEG2RAD(degrees)),0.0,0.0,
+	0.0,0.0,1.0,0.0,
+	0.0,0.0,0.0,1.0
+};
 
 //our main routine
 int main(int argc, char *argv[])
@@ -67,32 +79,72 @@ void draw(void)
   //make changes to the modelview matrix
   glMatrixMode(GL_MODELVIEW);
   //initialise the modelview matrix to the identity matrix
-  glLoadIdentity();
-  
-  //***DO ALL YOUR DRAWING HERE****//
+  //glLoadIdentity();
 
-  glLoadIdentity(); //move the current origin to the center of the screen,as reset of position.
-  glTranslatef(-1.5f, 0.0f, -6.0f);
-  glBegin(GL_TRIANGLES);
-  glVertex3f(0.0f, 0.0f, 0.0f);
-  glVertex3f(1.0f, 0.0f, 0.0f);
-  glVertex3f(0.0f, 1.0f, 0.0f);
-  glEnd();
+  //Initialize origin with identityMatrix
+  glTranslatef(0.0, 0.0, -10.0);
 
-  glLoadIdentity(); //move the current origin to the center of the screen,as reset of position.
-  glRotatef(45, 0.0f, 0.0f, 1.0f); //drawing the second triangle rotated around z−axis with 45 degrees.
-  glTranslatef(0.0f, 0.0f, -6.0f);
-  glBegin(GL_TRIANGLES);
-  glVertex3f(0.0f, 0.0f, 0.0f);
-  glVertex3f(1.0f, 0.0f, 0.0f);
-  glVertex3f(0.0f, 1.0f, 0.0f);
-  glEnd();
+  GLfloat myIdentityMatrix[16] = {
+	  1.0,0.0,0.0,0.0,
+	  0.0,1.0,0.0,0.0,
+	  0.0,0.0,-10.0,0.0,
+	  0.0,0.0,0.0,1.0
+  };
+  glMatrixMode(GL_MODELVIEW);
+  glLoadMatrixf(myIdentityMatrix);
 
+  //Initialize origin with myIdentityMatrix
+  glTranslatef(0.0, 0.0, 1.0);
+
+
+  //***DO ALL YOUR DRAWING HERE
+
+  //Draw first square
+  glPushMatrix();
+  glTranslatef(1.0, 1.0, 0.5);
+  if (rotateAlongVertice) {
+	  glRotatef(degrees, 1.0, 0.0, 0.0);
+	  glTranslatef(0.0, 1.0, 0.0);
+  }
+  else {
+	  glMultMatrixf(rotationMatrix);
+	  //glRotatef(degrees, 0.0, 0.0, 1.0);
+  }
+  draw_square();
+  glPopMatrix();
+
+
+  //Draw second square
+  glPushMatrix();
+  glTranslatef(-1.0, 1.0, 0.5);
+  if (rotateAlongVertice) {
+	  glRotatef(degrees, -1.0, 0.0, 0.0);
+	  glTranslatef(0.0, 1.0, 0.0);
+	  rotateAlongVertice = false;
+  }
+  else
+	  glRotatef(degrees, 0.0, 0.0, 1.0);
+  draw_square();
+  glPopMatrix();
 
   //flush what we've drawn to the buffer
   glFlush();
   //swap the back buffer with the front buffer
   glutSwapBuffers();
+}
+
+void draw_square(void) {
+	//a simple function to draw a square with the current markers orientation and position on screen
+	glBegin(GL_POLYGON);
+	glColor3f(1.0, 0.0, 0.0);
+	glVertex3f(-1.0, 1.0, 0.0);
+	glColor3f(0.0, 1.0, 0.0);
+	glVertex3f(-1.0, -1.0, 0.0);
+	glColor3f(0.0, 0.0, 1.0);
+	glVertex3f(1.0, -1.0, 0.0);
+	glColor3f(1.0, 1.0, 1.0);
+	glVertex3f(1.0, 1.0, 0.0);
+	glEnd();
 }
 
 //idle callback function - this is called when there is nothing 
@@ -102,17 +154,30 @@ void idle(void)
   //this is a good place to do animation
   //since there are no animations in this test, we can leave 
   //idle() empty
+	//degrees+=0.05;
+	//draw();
 }
 
 //key callback function - called whenever the user presses a 
 //key
 void key(unsigned char k, int x, int y)
 {
+	std::cout << "k: " << k << std::endl;
   switch(k)
   {
     case 27: //27 is the ASCII code for the ESCAPE key
       exit(0);
       break;
+	case 'v':
+		rotateAlongVertice = true;
+	case 'r': //114 is the ASCII code for r
+		degrees += 5;
+		rotationMatrix[0] = cos(DEG2RAD(degrees));
+		rotationMatrix[1] = -sin(DEG2RAD(degrees));
+		rotationMatrix[4] = sin(DEG2RAD(degrees));
+		rotationMatrix[5] = cos(DEG2RAD(degrees));
+		draw();
+		break;
   }
 }
 
