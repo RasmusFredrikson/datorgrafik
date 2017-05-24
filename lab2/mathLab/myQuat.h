@@ -23,7 +23,7 @@ class MyQuat
 		MyQuat getConjugate(void) const;	
 		MyQuat getInverse(void) const;
 
-		MyMatrix convertToRotationMatrix(void) const; 
+		//GLfloat convertToRotationMatrix(void) const; 
 
 		float w;
 		MyVector v;
