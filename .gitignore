@@ -3,7 +3,14 @@ CgLab1/CMakeLists.txt
 CgLab1/SDLauxiliary.h
 CgLab1/build/
 CgLab1/glm/
+
+#Lab 2, Visual Studios
 *Debug/
 lab2/*/*.htm
 lab2/*/*.dll
 *.vs
+*.vcxproj
+*.vcproj
+*.sln
+*include/
+*libs/
