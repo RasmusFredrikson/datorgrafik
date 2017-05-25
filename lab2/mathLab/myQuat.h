@@ -1,5 +1,4 @@
 //Introductory quaternion class
-#include <math.h>
 #include "myvector.h"
 #include "mymatrix.h"
 

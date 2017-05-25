@@ -10,8 +10,7 @@
 #include <gl/glu.h>           // OpenGL utilties
 #include <glut.h>             // OpenGL utilties
 
-#include "myvector.h"
-#include "mymatrix.h"
+#include "myquat.h"
 #include <iostream>
 
 using namespace MyMathLab;
@@ -25,16 +24,47 @@ void key(unsigned char k, int x, int y);  //handle key presses
 void reshape(int width, int height);      //when the window is resized
 void init_drawing(void);                  //drawing intialisation
 void draw_square(void);
+void draw_quaternion_vector(void);
 
 //Global Variables
 bool rotateAlongVertice = false;
 float degrees = 0;
+int task;
 GLfloat rotationMatrix[16] = {
 	cos(DEG2RAD(degrees)),-sin(DEG2RAD(degrees)),0.0,0.0,
 	sin(DEG2RAD(degrees)),cos(DEG2RAD(degrees)),0.0,0.0,
 	0.0,0.0,1.0,0.0,
 	0.0,0.0,0.0,1.0
 };
+
+void DrawVector(MyPosition& startPos, MyVector& v1)
+{
+	//draw the vector v1 starting from position startPos
+	//this function will only work as long as the z coordinate for both positions is zero
+	float length = sqrt((v1.x * v1.x) + (v1.y * v1.y) + (v1.z * v1.z));
+	MyVector v;
+	if (length > 0.0) { v.x = v1.x / length; v.y = v1.y / length; v.z = v1.z / length; }
+	else return;
+	float d = (v.x * 0.0) + (v.y * 1.0) + (v.z * 0.0);
+	float a = RAD2DEG(acos(d));
+	if (v.x > 0.0) a = -a;
+
+	glPushMatrix();
+	glTranslatef(startPos.x, startPos.y, startPos.z);
+	glRotatef(a, 0.0, 0.0, 1.0);
+	float space = 0.25;
+	glBegin(GL_LINES);
+	glVertex3f(0.0, 0.0, 0.0);
+	glVertex3f(0.0, length, 0.0);
+
+	glVertex3f(0.0, length, 0.0);
+	glVertex3f(-space, length - (space * 1.5), 0.0);
+
+	glVertex3f(0.0, length, 0.0);
+	glVertex3f(space, length - (space * 1.5), 0.0);
+	glEnd();
+	glPopMatrix();
+}
 
 //our main routine
 int main(int argc, char *argv[])
@@ -87,35 +117,44 @@ void draw(void)
 
   myMatrix.setGLMatrix();
 
-  //***DO ALL YOUR DRAWING HERE
+  switch (task) {
 
-  //Draw first square
-  glPushMatrix();
-  glTranslatef(1.0, 1.0, -5.0);
-  if (rotateAlongVertice) {
-	  glRotatef(degrees, 1.0, 0.0, 0.0);
-	  glTranslatef(0.0, 1.0, 0.0);
-  }
-  else {
-	  glMultMatrixf(rotationMatrix); //Solution 5
-	  //glRotatef(degrees, 0.0, 0.0, 1.0);
-  }
-  draw_square();
-  glPopMatrix();
+  case 1:
+	  //***DO ALL YOUR DRAWING HERE
+
+	  //Draw first square
+	  glPushMatrix();
+	  glTranslatef(1.0, 1.0, -5.0);
+	  if (rotateAlongVertice) {
+		  glRotatef(degrees, 1.0, 0.0, 0.0);
+		  glTranslatef(0.0, 1.0, 0.0);
+	  }
+	  else {
+		  glMultMatrixf(rotationMatrix); //Solution 5
+		  //glRotatef(degrees, 0.0, 0.0, 1.0);
+	  }
+	  draw_square();
+	  glPopMatrix();
 
 
-  //Draw second square
-  glPushMatrix();
-  glTranslatef(-1.0, 1.0, -5.0);
-  if (rotateAlongVertice) {
-	  glRotatef(degrees, -1.0, 0.0, 0.0);
-	  glTranslatef(0.0, 1.0, 0.0);
-	  rotateAlongVertice = false;
+	  //Draw second square
+	  glPushMatrix();
+	  glTranslatef(-1.0, 1.0, -5.0);
+	  if (rotateAlongVertice) {
+		  glRotatef(degrees, -1.0, 0.0, 0.0);
+		  glTranslatef(0.0, 1.0, 0.0);
+		  rotateAlongVertice = false;
+	  }
+	  else
+		  glRotatef(degrees, 0.0, 0.0, 1.0); //Solution 2
+	  draw_square();
+	  glPopMatrix();
+	  break;
+
+  case 2:
+	  draw_quaternion_vector();
+	  break;
   }
-  else
-	  glRotatef(degrees, 0.0, 0.0, 1.0); //Solution 2
-  draw_square();
-  glPopMatrix();
 
   //flush what we've drawn to the buffer
   glFlush();
@@ -137,6 +176,70 @@ void draw_square(void) {
 	glEnd();
 }
 
+void draw_quaternion_vector() {
+	int degrees = 45;
+
+	MyVector axisVector(0.0, 0.0, 1.0);
+	axisVector.uniformScale(sin(DEG2RAD(degrees/2)));
+
+	MyPosition myPosition;
+	myPosition.x = 1.0;
+	myPosition.y = 1.0;
+	myPosition.z = 0.0;
+
+	MyPosition origin;
+	origin.x = 0.0;
+	origin.y = 0.0;
+	origin.z = 0.0;
+	
+	MyQuat qvec = MyQuat(myPosition);
+	MyQuat q1 = MyQuat(cos(DEG2RAD(degrees/2)), axisVector);
+	MyQuat q1Conj = q1.getConjugate();
+	MyQuat qrA = qvec.multiplyBy(q1Conj);
+	MyQuat qr = q1.multiplyBy(qrA);
+
+	std::cout << "qvec.w: " << qvec.w << " qvec.v.x: " << qvec.v.x << " qvec.v.y: " << qvec.v.y << " qvec.v.z: " << qvec.v.z << std::endl;
+	std::cout << "q1.w: " << q1.w << " q1.v.x: " << q1.v.x << " q1.v.y: " << q1.v.y << " q1.v.z: " << q1.v.z << std::endl;
+	std::cout << "q1Conj.w: " << q1Conj.w << " q1Conj.v.x: " << q1Conj.v.x << " q1Conj.v.y: " << q1Conj.v.y << " q1Conj.v.z: " << q1Conj.v.z << std::endl;
+
+	std::cout << "qrA.w: " << qrA.w << " qrA.v.x: " << qrA.v.x << " qrA.v.y: " << qrA.v.y << " qrA.v.z: " << qrA.v.z << std::endl;
+	std::cout << "qr.w: " << qr.w << " qr.v.x: " << qr.v.x << " qr.v.y: " << qr.v.y << " qr.v.z: " << qr.v.z << std::endl;
+
+	//draw the vector at position
+	glDisable(GL_LINE_STIPPLE);
+	glLineWidth(2.0);
+	glColor3f(1.0, 0.0, 0.0);
+	DrawVector(origin, qvec.v);
+	glColor3f(0.0, 1.0, 0.0);
+
+	//white origin point
+	glPointSize(5.0);
+	glColor3f(1.0, 1.0, 1.0);
+	glPushMatrix();
+	glBegin(GL_POINTS);
+	glVertex2f(0.0,0.0);
+	glEnd();
+	glPopMatrix();
+
+	//yellow start point
+	glPointSize(5.0);
+	glColor3f(1.0, 1.0, 0.0);
+	glPushMatrix();
+	glBegin(GL_POINTS);
+	glVertex2f(myPosition.x, myPosition.y);
+	glEnd();
+	glPopMatrix();
+
+	//red end point
+	glPointSize(5.0);
+	glColor3f(1.0, 0.0, 0.0);
+	glPushMatrix();
+	glBegin(GL_POINTS);
+	glVertex2f(qr.v.x, qr.v.y);
+	glEnd();
+	glPopMatrix();
+}
+
 //idle callback function - this is called when there is nothing 
 //else to do
 void idle(void)
@@ -150,11 +253,9 @@ void idle(void)
 
 //key callback function - called whenever the user presses a 
 //key
-void key(unsigned char k, int x, int y)
-{
+void key(unsigned char k, int x, int y) {
 	std::cout << "k: " << k << std::endl;
-  switch(k)
-  {
+  switch(k) {
     case 27: //27 is the ASCII code for the ESCAPE key
       exit(0);
       break;
@@ -166,9 +267,15 @@ void key(unsigned char k, int x, int y)
 		rotationMatrix[1] = -sin(DEG2RAD(degrees));
 		rotationMatrix[4] = sin(DEG2RAD(degrees));
 		rotationMatrix[5] = cos(DEG2RAD(degrees));
-		draw();
+		break;
+	case 's':
+		task = 1;
+		break;
+	case 'q':
+		task = 2;
 		break;
   }
+  draw();
 }
 
 //reshape callback function - called when the window size changed
