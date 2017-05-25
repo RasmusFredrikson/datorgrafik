@@ -65,13 +65,17 @@ MyQuat MyQuat::getInverse(void) const {
 	return result;
 }
 
-//GLfloat MyQuat::convertToRotationMatrix(void) const {
-//	GLfloat rotationMatrix[16] = {
-//		1 - 2 * this->v.y*this->v.y - 2 * this->v.z*this->v.z, 2 * this->v.x*this->v.y - 2 * this->v.z*w, 2 * this->v.x*this->v.z + 2 * this->v.y*w, 0.0,
-//		2 * this->v.x*this->v.y + 2 * this->v.z*w, 1 - 2 * this->v.x*this->v.x - 2 * this->v.z*this->v.z, 2 * this->v.y*this->v.z - 2 * this->v.x*w, 0.0,
-//		2 * this->v.x*this->v.z - 2 * this->v.y*w, 2 * this->v.y*this->v.z + 2 * this->v.x*w, 1 - 2 * this->v.x*this->v.x - 2 * this->v.y*this->v.y, 0.0,
-//		0.0,0.0,0.0,1.0
-//	};
-//	
-//	return rotationMatrix;
-//}
+MyMatrix MyQuat::convertToRotationMatrix(void) const {
+	GLfloat rotationMatrix[16] = {
+		1 - 2 * this->v.y*this->v.y - 2 * this->v.z*this->v.z, 2 * this->v.x*this->v.y - 2 * this->v.z*w, 2 * this->v.x*this->v.z + 2 * this->v.y*w, 0.0,
+		2 * this->v.x*this->v.y + 2 * this->v.z*w, 1 - 2 * this->v.x*this->v.x - 2 * this->v.z*this->v.z, 2 * this->v.y*this->v.z - 2 * this->v.x*w, 0.0,
+		2 * this->v.x*this->v.z - 2 * this->v.y*w, 2 * this->v.y*this->v.z + 2 * this->v.x*w, 1 - 2 * this->v.x*this->v.x - 2 * this->v.y*this->v.y, 0.0,
+		0.0,0.0,0.0,1.0
+	};
+
+	glLoadMatrixf(rotationMatrix);
+	MyMatrix myMatrix;
+	myMatrix.getGLModelviewMatrix();
+	
+	return myMatrix;
+}
