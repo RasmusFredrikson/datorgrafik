@@ -176,7 +176,7 @@ void key(unsigned char k, int x, int y)
       exit(0);
       break;
   }
-  if (k >= '1' && k <= '6')
+  if (k >= '1' && k <= '7')
 	  g_nActiveSystem = (int)(k - '1');
   glutPostRedisplay();
 }
@@ -398,4 +398,45 @@ void initParticles( void )
                                           MyVector( 0.0f, 5.0f, 0.0f ) ); // Ceiling
 
     g_pParticleSystems[5]->Init();
+
+	//
+	// Green fountain particles sprays up in the air 
+	// and then falls down on the ground while they hit 
+	// the walls on their way down
+
+	g_pParticleSystems[6] = new CParticleSystem();
+
+	g_pParticleSystems[6]->SetTexture("particle.bmp");
+	g_pParticleSystems[6]->SetMaxParticles(1000);
+	g_pParticleSystems[6]->SetNumToRelease(100);
+	g_pParticleSystems[6]->SetReleaseInterval(0.05f);
+	g_pParticleSystems[6]->SetLifeCycle(10.0f);
+	g_pParticleSystems[6]->SetSize(10.0f);
+	g_pParticleSystems[6]->SetColor(MyVector(0.0f, 1.0f, 0.0f));
+	g_pParticleSystems[6]->SetPosition(MyVector(0.0f, 0.0f, 0.0f));
+	g_pParticleSystems[6]->SetVelocity(MyVector(0.0f, 5.0f, 1.0f));
+	g_pParticleSystems[6]->SetGravity(MyVector(0.0f, -2.0f, 0.0f));
+	g_pParticleSystems[6]->SetWind(MyVector(0.0f, 0.0f, -20.0f));
+	g_pParticleSystems[6]->SetVelocityVar(5.5f);
+
+	// Create a series of planes to collide with
+	g_pParticleSystems[6]->SetCollisionPlane(MyVector(0.0f, 1.0f, 0.0f),
+		MyVector(0.0f, 0.0f, 0.0f)); // Floor
+
+	g_pParticleSystems[6]->SetCollisionPlane(MyVector(1.0f, 0.0f, 0.0f),
+		MyVector(-3.0f, 0.0f, 0.0f)); // Left Wall
+
+	g_pParticleSystems[6]->SetCollisionPlane(MyVector(-1.0f, 0.0f, 0.0f),
+		MyVector(3.0f, 0.0f, 0.0f)); // Right Wall
+
+	g_pParticleSystems[6]->SetCollisionPlane(MyVector(0.0f, 0.0f, 1.0f),
+		MyVector(0.0f, 0.0f, -3.0f)); // Front Wall
+
+	g_pParticleSystems[6]->SetCollisionPlane(MyVector(0.0f, 0.0f, -1.0f),
+		MyVector(0.0f, 0.0f, 3.0f)); // Back Wall
+
+	g_pParticleSystems[6]->SetCollisionPlane(MyVector(0.0f, -1.0f, 0.0f),
+		MyVector(0.0f, 5.0f, 0.0f)); // Ceiling
+
+	g_pParticleSystems[6]->Init();
 }
