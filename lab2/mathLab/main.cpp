@@ -24,7 +24,7 @@ void key(unsigned char k, int x, int y);  //handle key presses
 void reshape(int width, int height);      //when the window is resized
 void init_drawing(void);                  //drawing intialisation
 void draw_square(void);
-void draw_quaternion_vector(void);
+void draw_quaternion_vector(MyPosition, MyVector, int);
 
 //Global Variables
 bool rotateAlongVertice = false;
@@ -111,16 +111,20 @@ void draw(void)
   //initialise the modelview matrix to the identity matrix
   glLoadIdentity();
 
+  MyPosition myPosition;
+  MyVector axisVector;
   MyMatrix myMatrix = MyMatrix();
-  glTranslatef(0.0, 0.0, -10.0);
-  myMatrix.getGLModelviewMatrix();
 
-  myMatrix.setGLMatrix();
 
   switch (task) {
 
   case 1:
 	  //***DO ALL YOUR DRAWING HERE
+
+	  glTranslatef(0.0, 0.0, -10.0);
+	  myMatrix.getGLModelviewMatrix();
+
+	  myMatrix.setGLMatrix();
 
 	  //Draw first square
 	  glPushMatrix();
@@ -152,7 +156,27 @@ void draw(void)
 	  break;
 
   case 2:
-	  draw_quaternion_vector();
+	  glTranslatef(0.0, 0.0, -10.0);
+
+	  myPosition.x = 1.0;
+	  myPosition.y = 1.0;
+	  myPosition.z = 0.0;
+	  axisVector.x = axisVector.y = 0.0; 
+	  axisVector.z = 1.0;
+	  draw_quaternion_vector(myPosition, axisVector, 45);
+	  break;
+  case 3:
+	  glTranslatef(0.0, 0.0, -50.0);
+
+	  MyPosition myPosition;
+	  myPosition.x = 0.0;
+	  myPosition.y = -10.0;
+	  myPosition.z = 0.0;
+	  axisVector.x = 10.0;
+	  axisVector.y = axisVector.z = 0.0;
+	  axisVector.normalise();
+	  std::cout << "axisVectorNorm: " << axisVector.y << std::endl;
+	  draw_quaternion_vector(myPosition, axisVector, 45);
 	  break;
   }
 
@@ -176,16 +200,9 @@ void draw_square(void) {
 	glEnd();
 }
 
-void draw_quaternion_vector() {
-	int degrees = 45;
-
-	MyVector axisVector(0.0, 0.0, 1.0);
+void draw_quaternion_vector(MyPosition myPosition, MyVector axisVector, int degrees) {
+	
 	axisVector.uniformScale(sin(DEG2RAD(degrees/2)));
-
-	MyPosition myPosition;
-	myPosition.x = 1.0;
-	myPosition.y = 1.0;
-	myPosition.z = 0.0;
 
 	MyPosition origin;
 	origin.x = 0.0;
@@ -205,23 +222,38 @@ void draw_quaternion_vector() {
 	std::cout << "qrA.w: " << qrA.w << " qrA.v.x: " << qrA.v.x << " qrA.v.y: " << qrA.v.y << " qrA.v.z: " << qrA.v.z << std::endl;
 	std::cout << "qr.w: " << qr.w << " qr.v.x: " << qr.v.x << " qr.v.y: " << qr.v.y << " qr.v.z: " << qr.v.z << std::endl;
 
-	//draw the vector at position
-	glDisable(GL_LINE_STIPPLE);
-	glLineWidth(2.0);
+	//draw a red horizontal line, one unit long
+	glLineWidth(3.0);
 	glColor3f(1.0, 0.0, 0.0);
-	DrawVector(origin, qvec.v);
-	glColor3f(0.0, 1.0, 0.0);
-
-	//white origin point
-	glPointSize(5.0);
-	glColor3f(1.0, 1.0, 1.0);
 	glPushMatrix();
-	glBegin(GL_POINTS);
-	glVertex2f(0.0,0.0);
+	glTranslatef(0.0, 0.0, 0.0);
+	glBegin(GL_LINES);
+	glVertex2f(0.0, 0.0);
+	glVertex2f(1.0, 0.0);
 	glEnd();
 	glPopMatrix();
 
-	//yellow start point
+	//draw a green vertical line, one unit high
+	glLineWidth(3.0);
+	glColor3f(0.0, 0.0, 1.0);
+	glPushMatrix();
+	glBegin(GL_LINES);
+	glVertex2f(0.0, 0.0);
+	glVertex2f(0.0, 1.0);
+	glEnd();
+	glPopMatrix();
+
+	//draw a white point at the origin
+	glPointSize(2.0);
+	glColor3f(1.0, 1.0, 1.0);
+	glPushMatrix();
+	glTranslatef(0.0, 0.0, 0.0);
+	glBegin(GL_POINTS);
+	glVertex2f(0.0, 0.0);
+	glEnd();
+	glPopMatrix();
+
+	//draw a yellow point at the start point of the rotation
 	glPointSize(5.0);
 	glColor3f(1.0, 1.0, 0.0);
 	glPushMatrix();
@@ -230,9 +262,9 @@ void draw_quaternion_vector() {
 	glEnd();
 	glPopMatrix();
 
-	//red end point
+	//draw a green point at the end point of the rotation
 	glPointSize(5.0);
-	glColor3f(1.0, 0.0, 0.0);
+	glColor3f(0.0, 1.0, 0.0);
 	glPushMatrix();
 	glBegin(GL_POINTS);
 	glVertex2f(qr.v.x, qr.v.y);
@@ -268,11 +300,14 @@ void key(unsigned char k, int x, int y) {
 		rotationMatrix[4] = sin(DEG2RAD(degrees));
 		rotationMatrix[5] = cos(DEG2RAD(degrees));
 		break;
-	case 's':
+	case '1':
 		task = 1;
 		break;
-	case 'q':
+	case '2':
 		task = 2;
+		break;
+	case '3':
+		task = 3;
 		break;
   }
   draw();
