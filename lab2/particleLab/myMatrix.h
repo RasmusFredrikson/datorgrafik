@@ -9,13 +9,14 @@
 
 #include <gl/gl.h>            // standard OpenGL include
 #include <gl/glu.h>           // OpenGL utilties
-#include <glut.h>             // OpenGL utilties
+#include "glut.h"             // OpenGL utilties
 
 
 class MyMatrix
 {
 	public:
 		MyMatrix(void);
+		MyMatrix(float coeffs[]);
 		~MyMatrix(void){;}
 
 		void loadIdentity(void);

@@ -6,6 +6,16 @@ MyMatrix::MyMatrix(void)
 	this->loadIdentity();
 }
 
+MyMatrix::MyMatrix(float coeffs[])
+{
+	this->loadIdentity();
+	GLfloat newMatrix[16];
+	for (int i = 0; i < 16; i++) {
+		newMatrix[i] = coeffs[i];
+	}
+	memcpy(this->myMatrix, newMatrix, sizeof(myMatrix));
+}
+
 void MyMatrix::loadIdentity(void)
 {
 	static GLfloat identityMatrix[16] =

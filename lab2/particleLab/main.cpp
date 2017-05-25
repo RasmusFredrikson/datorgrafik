@@ -1,30 +1,30 @@
 #define WIN32_LEAN_AND_MEAN
 
+#pragma comment(lib, "glaux.lib")
 #pragma comment(lib, "opengl32.lib")
 #pragma comment(lib, "glu32.lib")
-#pragma comment(lib, "glaux.lib")
 #pragma comment(linker, "/subsystem:console")
 
-#include "windows.h"
+#include "stdlib.h"
+#include "stdio.h"
 
-#include <gl/gl.h>            // standard OpenGL include
-#include <gl/glu.h>           // OpenGL utilties
-#include <glut.h>             // OpenGL utilties
+#include "windows.h"
 
 #include <mmsystem.h>
 
 #include "myvector.h"
 #include "mymatrix.h"
 
-#include "stdlib.h"
-#include "stdio.h"
-
 #include "objloader.h"
 #include "particleSystem.h"
 
+#include <gl/gl.h>            // standard OpenGL include
+#include <gl/glu.h>           // OpenGL utilties
+#include "glut.h"             // OpenGL utilties
+
 //define the particle systems
 int g_nActiveSystem = 2;
-CParticleSystem *g_pParticleSystems[6];
+CParticleSystem *g_pParticleSystems[7];
 void initParticles( void );
 float  g_fElpasedTime;
 double g_dCurTime;
@@ -109,7 +109,7 @@ void draw(void)
 	//features and helps verify that the basic system is working
 	//It is possible that Point Sprites may not be supported by your
 	//graphics card, particularly if it is an older type
-	bool doTestRender = true;
+	bool doTestRender = false;
 
 	if (doTestRender)
 	{
@@ -119,9 +119,12 @@ void draw(void)
 	}
 	else
 	{
+		glEnable(GL_DEPTH_TEST);
+		glDepthMask(GL_FALSE);
 		glEnable(GL_TEXTURE_2D);
 		glEnable(GL_BLEND);		
-		
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+
 		//specify blending function here using glBlendFunc
 		
 		glBindTexture( GL_TEXTURE_2D, g_pParticleSystems[g_nActiveSystem]->GetTextureID() );
@@ -149,8 +152,11 @@ void idle(void)
   //since there are no animations in this test, we can leave 
   //idle() empty
 
+	g_dCurTime = timeGetTime();
+	g_fElpasedTime = (float)((g_dCurTime - g_dLastTime) * 0.001);
+	g_dLastTime = g_dCurTime;
 
-
+	g_pParticleSystems[g_nActiveSystem]->Update((float)g_fElpasedTime);
 	glutPostRedisplay();
 }
 
@@ -170,6 +176,8 @@ void key(unsigned char k, int x, int y)
       exit(0);
       break;
   }
+  if (k >= '1' && k <= '6')
+	  g_nActiveSystem = (int)(k - '1');
   glutPostRedisplay();
 }
 

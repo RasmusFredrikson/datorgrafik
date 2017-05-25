@@ -1,4 +1,5 @@
 #include "MyVector.h"
+#include <iostream>
 
 MyVector::MyVector(void)
 {
@@ -19,55 +20,80 @@ MyVector::MyVector(MyPosition& start, MyPosition& end)
 
 MyVector MyVector::addTo(const MyVector &other) const
 {
+	//add this vector to other and return the result
 	MyVector result;
-	//your code here
+	result.x = this->x + other.x;
+	result.y = this->y + other.y;
+	result.z = this->z + other.z;
 	return result;
 }
 
 MyVector MyVector::subtractFrom(const MyVector &other) const
 {
+	//subtract this vector from other and return the result
 	MyVector result;
-	//your code here
+	result.x = other.x - this->x;
+	result.y = other.y - this->y;
+	result.z = other.z - this->z;
 	return result;
 }
 		
 float MyVector::getMagnitude(void) const
 {
+	//get the length of the vector
 	float result;
-	//your code here
+	result = sqrt(this->x * this->x + this->y * this->y + this->z * this->z);
 	return result;
 }
 
 void MyVector::uniformScale(const float m)
 {
-	//your code here
+	//set the length of the vector
+	this->x *= m;
+	this->y *= m;
+	this->z *= m;
 }
 
 void MyVector::normalise(void)
 {
-	//your code here
+	setMagnitude(1.0);
 }
 
 void MyVector::setMagnitude(const float m)
 {
-	if (this->getMagnitude() > 0.0)
-	{
-		this->normalise();
-		this->uniformScale(m);
-	}
+	//set the length of the vector
+	float curLength = getMagnitude();
+	this->x *= m / curLength;
+	this->y *= m / curLength;
+	this->z *= m / curLength;
 }
 	
 float MyVector::getDotProduct(const MyVector &other) const
 {
-	float result;
-	//your code here
+	//return the dot product between this vector and other
+	float result = 0;
+	result += this->x * other.x;
+	result += this->y * other.y;
+	result += this->z * other.z;
 	return result;
 }
 
 MyVector MyVector::getCrossProduct(const MyVector &other) const
 {
+	//return the cross product between this vector and other
 	MyVector result;
-	//your code here
+	result.x = this->y * other.z - this->z * other.y;
+	result.x = this->z * other.x - this->x * other.z;
+	result.x = this->x * other.y - this->y * other.x;
+	return result;
+}
+
+MyVector MyVector::multiplyScalar(const float scalar) const
+{
+	MyVector result;
+	result.x = this->x * scalar;
+	result.y = this->y * scalar;
+	result.z = this->z * scalar;
 	return result;
 }
 
@@ -174,4 +200,8 @@ MyVector& MyVector::operator -= ( const MyVector &other )
     z -= other.z;
 
     return *this;
+}
+
+void MyVector::printOut() const {
+	std::cout << "v: (" << x << ", " << y << ", " << z << ")" << std::endl;
 }

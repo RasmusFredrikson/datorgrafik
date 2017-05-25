@@ -10,6 +10,7 @@ class MyQuat
 		MyQuat(void);
 		MyQuat(float angleDeg, MyVector &axis);	//create from axis, angle
 		MyQuat(MyPosition &p);	//create from position
+		MyQuat(const MyQuat * q);
 		
 		~MyQuat(void){;}
 

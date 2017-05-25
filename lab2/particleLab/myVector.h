@@ -33,6 +33,8 @@ class MyVector
 
 		MyVector addTo(const MyVector &other) const;
 		MyVector subtractFrom(const MyVector &other) const;
+
+		MyVector multiplyScalar(const float scalar) const;
 		
 		void uniformScale(const float m);
 
@@ -59,6 +61,8 @@ class MyVector
 
 		MyVector operator + (void) const;
 		MyVector operator - (void) const;
+
+		void printOut() const;
 
 		float x;
 		float y;

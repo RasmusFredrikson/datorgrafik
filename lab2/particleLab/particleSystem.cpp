@@ -10,7 +10,8 @@
 #include <mmsystem.h>
 #include "stdio.h"
 #include <GL/gl.h>
-#include "glaux.h"
+#include "GLAUX.H"
+#include <iostream>
 
 #include "particlesystem.h"
 
@@ -493,6 +494,8 @@ void CParticleSystem::Render( void )
 {
     Particle  *pParticle = m_pActiveList;
 
+	//Update(0.001);
+
     //
 	// Set up the OpenGL state machine for using point sprites...
 	//
@@ -548,7 +551,6 @@ void CParticleSystem::Render( void )
 void CParticleSystem::RenderSimple( void )
 {
     Particle  *pParticle = m_pActiveList;
-
     //Use simple rendering system - GL_POINTS only
     glPointSize( 2.2 );
 
