@@ -35,6 +35,11 @@ float turretRot = 0.0;
 float mainGunRot = 0.0;
 float secondaryGunRot = 0.0;
 float wheelRot = 0.0;
+int tankBodyID;
+int tankTurretID;
+int tankMainGunID;
+int tankSecondaryGunID;
+int tankWheelID;
 
 //prototypes for our callback functions
 void draw(void);    //our drawing routine
@@ -87,6 +92,28 @@ void load_tank_objs(void)
   tankSecondaryGun = LoadOBJ(".\\tankobjs\\tanksecondarygun.obj");
   tankWheel = LoadOBJ(".\\tankobjs\\tankwheel.obj");
   SetTextures(tankBody->m_iMeshID, NULL, ".\\tankobjs\\texture.tga");
+  
+  //Load tankBody into display list
+  tankBodyID = glGenLists(1);
+  glNewList(tankBodyID, GL_COMPILE);
+  DrawOBJ(tankBody->m_iMeshID);
+  glEndList();
+  //Load tankTurret into display list
+  tankTurretID = glGenLists(1);  glNewList(tankTurretID, GL_COMPILE);
+  DrawOBJ(tankTurret->m_iMeshID);
+  glEndList();  //Load tankMainGun into display list
+  tankMainGunID = glGenLists(1);
+  glNewList(tankMainGunID, GL_COMPILE);
+  DrawOBJ(tankMainGun->m_iMeshID);
+  glEndList();  //Load tankSecondaryGun into display list
+  tankSecondaryGunID = glGenLists(1);
+  glNewList(tankSecondaryGunID, GL_COMPILE);
+  DrawOBJ(tankSecondaryGun->m_iMeshID);
+  glEndList();  //Load tankWheel into display list
+  tankWheelID = glGenLists(1);
+  glNewList(tankWheelID, GL_COMPILE);
+  DrawOBJ(tankWheel->m_iMeshID);
+  glEndList();
 }
 
 void draw_tank(float x, float y, float z)
@@ -95,37 +122,37 @@ void draw_tank(float x, float y, float z)
 	glTranslatef(x,y,z);
 
 	glScalef(0.1,0.1,0.1);		//reduce the size of the tank on screen
-	DrawOBJ(tankBody->m_iMeshID);
+	glCallList(tankBodyID);
 	
 	//Use your own draw code here to draw the rest of the tank
 	//Here's the code for each individual part
 	//Each part is placed with respect to the origin
 	//you'll need to add in glPushMatrix/glTranslatef/glRotatef/glPopMatrix commands as necessary
 	
-	//draw tankTurret
+	//draw tankTurret, rotate it with key 1&2
 	glPushMatrix();
 	glRotatef(turretRot, 0.0, 1.0, 0.0);
 	glTranslatef(0.0, 14.0, 0.0);
-	DrawOBJ(tankTurret->m_iMeshID);
+	glCallList(tankTurretID);
 
-	//draw tankMainGun
+	//draw tankMainGun, move it up and down with key 3&4
 	glPushMatrix();
 	glRotatef(mainGunRot, 1.0, 0.0, 0.0);
 	glTranslatef(53.7, -102.3, 11.0);
-	DrawOBJ(tankMainGun->m_iMeshID);
+	glCallList(tankMainGunID);
 	glPopMatrix();
 	
-	//draw tankSecondaryGun
+	//draw tankSecondaryGun, rotate it with key 5&6
 	glPushMatrix();
 	glTranslatef(-12.0, 16.5, -15.0);
 	glRotatef(secondaryGunRot, 0.0, 1.0, 0.0);
 	glTranslatef(0.0, 0.0, 11.0);
-	DrawOBJ(tankSecondaryGun->m_iMeshID);
+	glCallList(tankSecondaryGunID);
 	glPopMatrix();
 
 	glPopMatrix();
 
-	//draw wheels
+	//draw wheels, rotate them with key 7&8
 	glPushMatrix();
 	glTranslatef(-23.5, -11.0, -57.0);
 	for (int i = 0; i < 14; i++) {
@@ -140,7 +167,7 @@ void draw_tank(float x, float y, float z)
 		else {
 			glRotatef(wheelRot, 1.0, 0.0, 0.0);
 		}
-		DrawOBJ(tankWheel->m_iMeshID);
+		glCallList(tankWheelID);
 		glPopMatrix();
 		glTranslatef(0.0, 0.0, 16.0);
 	}
