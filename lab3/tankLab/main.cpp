@@ -27,8 +27,8 @@ ObjMesh* tankWheel;
 
 void load_tank_objs(void);
 
-float zPos = -10.0;
-float yRot = 0.0;
+float zPos = -20.0;
+float yRot = 90.0;
 float xPos = 0.0;
 float yPos = 0.0;
 
@@ -111,12 +111,23 @@ void draw_tank(float x, float y, float z)
 	glPopMatrix();
 	
 	//draw tankSecondaryGun
-	glTranslatef(-12.0, 27.0, -4.0);
 	glPushMatrix();
+	glTranslatef(-12.0, 27.0, -4.0);
 	DrawOBJ(tankSecondaryGun->m_iMeshID);
 	glPopMatrix();
 
-	//DrawOBJ(tankWheel->m_iMeshID);
+	//draw wheels
+	glPushMatrix();
+	glTranslatef(-23.5, -11.0, -57.0);
+	for (int i = 0; i < 14; i++) {
+		if (i == 7) {
+			glTranslatef(47.0, 0.0, -16.0);
+			glRotatef(180.0, 0.0, 1.0, 0.0);
+		}
+		DrawOBJ(tankWheel->m_iMeshID);
+		glTranslatef(0.0, 0.0, 16.0);
+	}
+	glPopMatrix();
 
 	glPopMatrix();
 }
@@ -160,7 +171,7 @@ void key(unsigned char k, int x, int y)
 {
   switch(k)
   {
-    case 'd':
+    case 'q':
 	  zPos--;
 	  break;
 	case 'e':
@@ -172,16 +183,16 @@ void key(unsigned char k, int x, int y)
 	case 'f':
 		yRot--;
 		break;
-	case 'q':
+	case 'a':
 		xPos++;
 		break;
-	case 'a':
+	case 'd':
 		xPos--;
 		break;
-	case 'w':
+	case 's':
 		yPos++;
 		break;
-	case 's':
+	case 'w':
 		yPos--;
 		break;
     case 27: //27 is the ASCII code for the ESCAPE key
