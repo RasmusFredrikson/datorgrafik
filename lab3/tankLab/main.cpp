@@ -31,6 +31,10 @@ float zPos = -20.0;
 float yRot = 90.0;
 float xPos = 0.0;
 float yPos = 0.0;
+float turretRot = 0.0;
+float mainGunRot = 0.0;
+float secondaryGunRot = 0.0;
+float wheelRot = 0.0;
 
 //prototypes for our callback functions
 void draw(void);    //our drawing routine
@@ -100,31 +104,44 @@ void draw_tank(float x, float y, float z)
 	
 	//draw tankTurret
 	glPushMatrix();
-	glTranslatef(0.0, 10.5, 0.0);
+	glRotatef(turretRot, 0.0, 1.0, 0.0);
+	glTranslatef(0.0, 14.0, 0.0);
 	DrawOBJ(tankTurret->m_iMeshID);
-	glPopMatrix();
 
 	//draw tankMainGun
 	glPushMatrix();
-	glTranslatef(53.7, -91.8, 11.0);
+	glRotatef(mainGunRot, 1.0, 0.0, 0.0);
+	glTranslatef(53.7, -102.3, 11.0);
 	DrawOBJ(tankMainGun->m_iMeshID);
 	glPopMatrix();
 	
 	//draw tankSecondaryGun
 	glPushMatrix();
-	glTranslatef(-12.0, 27.0, -4.0);
+	glTranslatef(-12.0, 16.5, -15.0);
+	glRotatef(secondaryGunRot, 0.0, 1.0, 0.0);
+	glTranslatef(0.0, 0.0, 11.0);
 	DrawOBJ(tankSecondaryGun->m_iMeshID);
+	glPopMatrix();
+
 	glPopMatrix();
 
 	//draw wheels
 	glPushMatrix();
 	glTranslatef(-23.5, -11.0, -57.0);
 	for (int i = 0; i < 14; i++) {
-		if (i == 7) {
+		if (i == 7) { //draw the wheels on the opposite side
 			glTranslatef(47.0, 0.0, -16.0);
 			glRotatef(180.0, 0.0, 1.0, 0.0);
 		}
+		glPushMatrix();
+		if (i > 6) {
+			glRotatef(-wheelRot, 1.0, 0.0, 0.0);
+		}
+		else {
+			glRotatef(wheelRot, 1.0, 0.0, 0.0);
+		}
 		DrawOBJ(tankWheel->m_iMeshID);
+		glPopMatrix();
 		glTranslatef(0.0, 0.0, 16.0);
 	}
 	glPopMatrix();
@@ -171,29 +188,57 @@ void key(unsigned char k, int x, int y)
 {
   switch(k)
   {
-    case 'q':
-	  zPos--;
-	  break;
-	case 'e':
-	  zPos++;
-	  break;
-	case 'r':
-		yRot++;
+    case 'q': //zoom out
+		zPos--;
 		break;
-	case 'f':
-		yRot--;
+	case 'e': //zoom in
+		zPos++;
 		break;
-	case 'a':
-		xPos++;
+	case 'r': //rotate camera left
+		yRot+=4;
 		break;
-	case 'd':
-		xPos--;
+	case 'f': //rotate camera right
+		yRot-=4; 
 		break;
-	case 's':
-		yPos++;
+	case 'a': //move camera left
+		xPos++; 
 		break;
-	case 'w':
-		yPos--;
+	case 'd': //move camera right
+		xPos--; 
+		break;
+	case 's': //move camera down
+		yPos++; 
+		break;
+	case 'w': //move camera up
+		yPos--; 
+		break;
+	case '1': //rotate turret left
+		turretRot+=2;
+		break;
+	case '2': //rotate turret right
+		turretRot-=2;
+		break;
+	case '3': //move main gun down
+		if (mainGunRot > 4)
+			break;
+		mainGunRot += 1;
+		break;
+	case '4': //move main gun up
+		if (mainGunRot < -4)
+			break;
+		mainGunRot -= 1;
+		break;
+	case '5': //rotate secondary gun left
+		secondaryGunRot += 2;
+		break;
+	case '6': //rotate secondary gun right
+		secondaryGunRot -= 2;
+		break;
+	case '7': //rotate wheels left
+		wheelRot += 2;
+		break;
+	case '8': //rotate wheels right
+		wheelRot -= 2;
 		break;
     case 27: //27 is the ASCII code for the ESCAPE key
       exit(0);
