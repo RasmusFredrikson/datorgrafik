@@ -16,6 +16,7 @@ using namespace MyMathLibrary;
 
 #include "stdlib.h"
 #include "stdio.h"
+#include <iostream>
 
 #include "objloader.h"
 
@@ -26,6 +27,7 @@ ObjMesh* tankSecondaryGun;
 ObjMesh* tankWheel;
 
 void load_tank_objs(void);
+void drawObj(ObjMesh*);
 
 float zPos = -20.0;
 float yRot = 90.0;
@@ -96,23 +98,31 @@ void load_tank_objs(void)
   //Load tankBody into display list
   tankBodyID = glGenLists(1);
   glNewList(tankBodyID, GL_COMPILE);
-  DrawOBJ(tankBody->m_iMeshID);
-  glEndList();
+  drawObj(tankBody);
+  glEndList();
+
   //Load tankTurret into display list
-  tankTurretID = glGenLists(1);  glNewList(tankTurretID, GL_COMPILE);
-  DrawOBJ(tankTurret->m_iMeshID);
-  glEndList();  //Load tankMainGun into display list
+  tankTurretID = glGenLists(1);
+  glNewList(tankTurretID, GL_COMPILE);
+  drawObj(tankTurret);
+  glEndList();
+
+  //Load tankMainGun into display list
   tankMainGunID = glGenLists(1);
   glNewList(tankMainGunID, GL_COMPILE);
-  DrawOBJ(tankMainGun->m_iMeshID);
-  glEndList();  //Load tankSecondaryGun into display list
+  drawObj(tankMainGun);
+  glEndList();
+
+  //Load tankSecondaryGun into display list
   tankSecondaryGunID = glGenLists(1);
   glNewList(tankSecondaryGunID, GL_COMPILE);
-  DrawOBJ(tankSecondaryGun->m_iMeshID);
-  glEndList();  //Load tankWheel into display list
+  drawObj(tankSecondaryGun);
+  glEndList();
+
+  //Load tankWheel into display list
   tankWheelID = glGenLists(1);
   glNewList(tankWheelID, GL_COMPILE);
-  DrawOBJ(tankWheel->m_iMeshID);
+  drawObj(tankWheel);
   glEndList();
 }
 
@@ -174,6 +184,22 @@ void draw_tank(float x, float y, float z)
 	glPopMatrix();
 
 	glPopMatrix();
+}
+
+void drawObj(ObjMesh *pMesh) {
+	glBegin(GL_TRIANGLES);
+	for(int i = 0; i < pMesh->m_iNumberOfFaces; i++) {
+		ObjFace *pf = &pMesh->m_aFaces[i];
+		for(int j = 0; j < 3; j++) {
+			int vk = pf->m_aVertexIndices[j];
+			int nk = pf->m_aNormalIndices[j];
+			int tk = pf->m_aTexCoordIndicies[j];
+			glTexCoord2f(pMesh->m_aTexCoordArray[tk].u, pMesh->m_aTexCoordArray[tk].v);
+			glNormal3f(pMesh->m_aNormalArray[nk].x, pMesh->m_aNormalArray[nk].y, pMesh->m_aNormalArray[nk].z);
+			glVertex3f(pMesh->m_aVertexArray[vk].x, pMesh->m_aVertexArray[vk].y, pMesh->m_aVertexArray[vk].z);
+		}
+	}
+	glEnd();
 }
 
 //draw callback function - this is called by glut whenever the 
