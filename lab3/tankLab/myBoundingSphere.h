@@ -11,7 +11,7 @@ namespace MyMathLibrary
 	class MyBoundingSphere {
 	public:
 		MyBoundingSphere(void);
-		MyBoundingSphere(MyPosition position, ObjMesh* pMesh);
+		MyBoundingSphere(ObjMesh* pMesh);
 
 		~MyBoundingSphere(void) { ; }
 

@@ -1,4 +1,5 @@
 #include "myBoundingSphere.h"
+#include <iostream>
 
 using namespace MyMathLibrary;
 
@@ -8,30 +9,44 @@ MyBoundingSphere::MyBoundingSphere(void) {
 	this->pMesh = new ObjMesh;
 }
 
-MyBoundingSphere::MyBoundingSphere(MyPosition position, ObjMesh* pMesh) {
-	this->position = position;
+MyBoundingSphere::MyBoundingSphere(ObjMesh* pMesh) {
 	this->pMesh = pMesh;
 	long x = 0;
 	long y = 0;
 	long z = 0;
-	long avgx, avgy, avgz;
-	for (int i = 0; i < pMesh->m_iNumberOfFaces*3; ++i) {
-		x += pMesh->m_aVertexArray[i].x;
-		y += pMesh->m_aVertexArray[i].y;
-		z += pMesh->m_aVertexArray[i].z;
-	}
-	avgx = ((long)x) / pMesh->m_iNumberOfFaces * 3;
-	avgy = ((long)y) / pMesh->m_iNumberOfFaces * 3;
-	avgz = ((long)z) / pMesh->m_iNumberOfFaces * 3;
+	int sum = 0;
 
-	float d = 0;
-
-	for (int i = 0; i < pMesh->m_iNumberOfFaces * 3; ++i) {
-		float v = abs(long(avgx - pMesh->m_aVertexArray[i].x)) + abs(long(avgy - pMesh->m_aVertexArray[i].y)) + abs(long(avgz - pMesh->m_aVertexArray[i].z));
-		if (v > d) {
-			d = v;
+	for (int i = 0; i < pMesh->m_iNumberOfFaces; i++) {
+		ObjFace *pf = &pMesh->m_aFaces[i];
+		for (int j = 0; j < 3; j++) {
+			int vk = pf->m_aVertexIndices[j];
+			x += pMesh->m_aVertexArray[vk].x;
+			y += pMesh->m_aVertexArray[vk].y;
+			z += pMesh->m_aVertexArray[vk].z;
+			sum++;
 		}
 	}
+	int divide = pMesh->m_iNumberOfFaces * 3;
+	std::cout << "sum: " << sum << " divide: " << divide << std::endl;
+	this->position.x = x / divide;
+	this->position.y = y / divide;
+	this->position.z = z / divide;
+
+	
+	float d = 0;
+
+	for (int i = 0; i < pMesh->m_iNumberOfFaces; i++) {
+		ObjFace *pf = &pMesh->m_aFaces[i];
+		for (int j = 0; j < 3; j++) {
+			int vk = pf->m_aVertexIndices[j];
+			float v = sqrt(pow(this->position.x - pMesh->m_aVertexArray[vk].x,2) + pow(this->position.y - pMesh->m_aVertexArray[vk].y,2) + pow(this->position.z - pMesh->m_aVertexArray[vk].z,2));
+			if (v > d) {
+				d = v;
+			}
+		}
+	}
+
+	std::cout << "radians: " << d << std::endl;
 
 	this->radians = d;
 }
