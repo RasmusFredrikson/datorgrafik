@@ -10,15 +10,12 @@
 #include <gl/glu.h>           // OpenGL utilties
 #include <glut.h>             // OpenGL utilties
 
-#include "myvector.h"
-#include "mymatrix.h"
+#include "myBoundingSphere.h"
 using namespace MyMathLibrary;
 
 #include "stdlib.h"
 #include "stdio.h"
 #include <iostream>
-
-#include "objloader.h"
 
 ObjMesh* tankBody;
 ObjMesh* tankTurret;
@@ -101,11 +98,21 @@ void load_tank_objs(void)
   drawObj(tankBody);
   glEndList();
 
+  MyPosition position;
+  position.x = position.y = position.z = 0.0;
+  MyBoundingSphere boundingSphereTankBody(position, tankBody);
+
   //Load tankTurret into display list
   tankTurretID = glGenLists(1);
   glNewList(tankTurretID, GL_COMPILE);
   drawObj(tankTurret);
   glEndList();
+
+  position.x = 0.0;
+  position.y = 14.0;
+  position.z = 0.0;
+  MyBoundingSphere boundingSphereTankTurret(position, tankTurret);
+
 
   //Load tankMainGun into display list
   tankMainGunID = glGenLists(1);
@@ -113,17 +120,33 @@ void load_tank_objs(void)
   drawObj(tankMainGun);
   glEndList();
 
+  position.x = 53.7;
+  position.y = -102.3;
+  position.z = 11.0;
+  MyBoundingSphere boundingSphereTankMainGun(position, tankMainGun);
+
   //Load tankSecondaryGun into display list
   tankSecondaryGunID = glGenLists(1);
   glNewList(tankSecondaryGunID, GL_COMPILE);
   drawObj(tankSecondaryGun);
   glEndList();
 
+  position.x = -12.0;
+  position.y = 16.5;
+  position.z = -15.0;
+  MyBoundingSphere boundingSphereTankSecondaryGun(position, tankSecondaryGun);
+
+
   //Load tankWheel into display list
   tankWheelID = glGenLists(1);
   glNewList(tankWheelID, GL_COMPILE);
   drawObj(tankWheel);
   glEndList();
+
+  //position.x = 0.0;
+  //position.y = 14.0;
+  //position.z = 0.0;
+  //MyBoundingSphere boundingSphereWheel(position, tankWheel);
 }
 
 void draw_tank(float x, float y, float z)
