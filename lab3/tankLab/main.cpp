@@ -160,6 +160,9 @@ void load_tank_objs(void)
 
 void draw_tank(float x, float y, float z) {
 
+	testIntersectPoint(xProj, yProj, zProj);
+	testIntersectLine();
+
 	glPushMatrix();
 		glTranslatef(x,y,z);
 		glScalef(0.1,0.1,0.1);		//reduce the size of the tank on screen
@@ -291,8 +294,6 @@ void draw_tank(float x, float y, float z) {
 		}
 	glPopMatrix();
 
-	testIntersectPoint(xProj, yProj, zProj);
-	testIntersectLine();
 	std::cout << "xProj: " << xProj << std::endl;
 	std::cout << "yProj: " << yProj << std::endl;
 	std::cout << "zProj: " << zProj << std::endl;
