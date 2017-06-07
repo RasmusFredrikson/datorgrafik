@@ -10,12 +10,14 @@
 #include <gl/glu.h>           // OpenGL utilties
 #include <glut.h>             // OpenGL utilties
 
-#include "myBoundingSphere.h"
+#include "myboundingsphere.h"
+
 using namespace MyMathLibrary;
 
 #include "stdlib.h"
 #include "stdio.h"
 #include <iostream>
+
 
 
 ObjMesh* tankBody;
@@ -31,6 +33,9 @@ MyBoundingSphere boundingSphereTankSecondaryGun;
 float xProj = 0.0;
 float yProj = 0.0;
 float zProj = 0.0;
+MyVector missileLine = MyVector(200,200,200);
+MyPosition missileLineFrom;
+//CParticleSystem *g_pParticleSystems[1];
 
 float zPos = -30.0;
 float yRot = 0.0;
@@ -59,7 +64,10 @@ void reshape(int width, int height);      //when the window is resized
 void init_drawing(void);                  //drawing intialisation
 void load_tank_objs(void);
 void drawObj(ObjMesh*);
-void testIntersect(float, float, float);
+void testIntersectPoint(float, float, float);
+void testIntersectLine();
+MyVector findClosestPointAlongLine(MyPosition);
+
 
 //our main routine
 int main(int argc, char *argv[])
@@ -100,6 +108,8 @@ int main(int argc, char *argv[])
 
 void load_tank_objs(void)
 {
+  missileLineFrom.x = missileLineFrom.y = missileLineFrom.z = 50;
+
   tankBody = LoadOBJ(".\\tankobjs\\tankbody.obj");
   tankTurret = LoadOBJ(".\\tankobjs\\tankturret.obj");
   tankMainGun = LoadOBJ(".\\tankobjs\\tankmaingun.obj");
@@ -155,6 +165,16 @@ void draw_tank(float x, float y, float z) {
 		glScalef(0.1,0.1,0.1);		//reduce the size of the tank on screen
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		//draw missileLine
+		glLineWidth(3.0);
+		glColor3f(1.0, 0.0, 0.0);
+		glPushMatrix();
+			glBegin(GL_LINES);
+			glVertex3f(missileLineFrom.x, missileLineFrom.y, missileLineFrom.z);
+			glVertex3f(missileLine.x, missileLine.y,missileLineFrom.z);
+		glEnd();
+		glPopMatrix();
 
 		//Draw projectile
 		glPushMatrix();
@@ -271,7 +291,8 @@ void draw_tank(float x, float y, float z) {
 		}
 	glPopMatrix();
 
-	testIntersect(xProj, yProj, zProj);
+	testIntersectPoint(xProj, yProj, zProj);
+	testIntersectLine();
 	std::cout << "xProj: " << xProj << std::endl;
 	std::cout << "yProj: " << yProj << std::endl;
 	std::cout << "zProj: " << zProj << std::endl;
@@ -294,9 +315,7 @@ void drawObj(ObjMesh *pMesh) {
 	glEnd();
 }
 
-void testIntersect(float x, float y, float z) {
-	std::cout << sqrt(pow(boundingSphereTankMainGun.position.x + 53.7 - x, 2) + pow(boundingSphereTankMainGun.position.y - 108.0 - y, 2) + pow(boundingSphereTankMainGun.position.z - z, 2));
-
+void testIntersectPoint(float x, float y, float z) {
 	if (sqrt(pow(boundingSphereTankBody.position.x - x, 2) + pow(boundingSphereTankBody.position.y - y, 2) + pow(boundingSphereTankBody.position.z - z, 2)) <= boundingSphereTankBody.radians) {
 		std::cout << "The point intersects the tank's body" << std::endl;
 		intersectTankBody = true;
@@ -317,6 +336,43 @@ void testIntersect(float x, float y, float z) {
 		std::cout << "The point doesn't intersect with the tank" << std::endl;
 	}
 }
+
+void testIntersectLine() {
+	MyVector closestPoint = findClosestPointAlongLine(boundingSphereTankBody.position);
+	if (sqrt(pow(boundingSphereTankBody.position.x - closestPoint.x, 2) + pow(boundingSphereTankBody.position.y - closestPoint.y, 2) + pow(boundingSphereTankBody.position.z - closestPoint.z, 2)) <= boundingSphereTankBody.radians) {
+		std::cout << "The line intersects the tank's body" << std::endl;
+		intersectTankBody = true;
+		closestPoint = findClosestPointAlongLine(boundingSphereTankTurret.position);
+		if (sqrt(pow(boundingSphereTankTurret.position.x - closestPoint.x, 2) + pow(boundingSphereTankTurret.position.y - 10 - closestPoint.y, 2) + pow(boundingSphereTankTurret.position.z - closestPoint.z, 2)) <= boundingSphereTankTurret.radians) {
+			std::cout << "The line intersects the tank's turret" << std::endl;
+			intersectTankTurret = true;
+			closestPoint = findClosestPointAlongLine(boundingSphereTankMainGun.position);
+			if (sqrt(pow(boundingSphereTankMainGun.position.x + 53.7 - closestPoint.x, 2) + pow(boundingSphereTankMainGun.position.y - 108.0 - closestPoint.y, 2) + pow(boundingSphereTankMainGun.position.z - closestPoint.z, 2)) <= boundingSphereTankMainGun.radians) {
+				std::cout << "The line intersects the tank's main gun" << std::endl;
+				intersectTankMainGun = true;
+			}
+			closestPoint = findClosestPointAlongLine(boundingSphereTankSecondaryGun.position);
+			if (sqrt(pow(boundingSphereTankSecondaryGun.position.x - closestPoint.x, 2) + pow(boundingSphereTankSecondaryGun.position.y + 20 - closestPoint.y, 2) + pow(boundingSphereTankSecondaryGun.position.z - closestPoint.z, 2)) <= boundingSphereTankSecondaryGun.radians) {
+				std::cout << "The line intersects the tank's secondary gun" << std::endl;
+				intersectTankSecondaryGun = true;
+			}
+		}
+	}
+	else {
+		std::cout << "The line doesn't intersect with the tank" << std::endl;
+	}
+}
+
+MyVector findClosestPointAlongLine(MyPosition tankPartOrigin) {
+	missileLine.normalise();
+	MyVector v;
+	v.x = tankPartOrigin.x - missileLineFrom.x;
+	v.y = tankPartOrigin.y - missileLineFrom.y;
+	v.z = tankPartOrigin.z - missileLineFrom.z;
+	float w = missileLine.getDotProduct(v);
+	MyVector r((missileLine.x * w), (missileLine.y * w), (missileLine.z * w));
+	return r;
+};
 
 //draw callback function - this is called by glut whenever the 
 //window needs to be redrawn
