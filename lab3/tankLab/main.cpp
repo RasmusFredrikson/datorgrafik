@@ -23,11 +23,11 @@ ObjMesh* tankTurret;
 ObjMesh* tankMainGun;
 ObjMesh* tankSecondaryGun;
 ObjMesh* tankWheel;
+GLUquadricObj *p = gluNewQuadric();
 MyBoundingSphere boundingSphereTankBody;
 MyBoundingSphere boundingSphereTankTurret;
 MyBoundingSphere boundingSphereTankMainGun;
 MyBoundingSphere boundingSphereTankSecondaryGun;
-MyBoundingSphere boundingSphereTankWheel;
 float xProj = 0.0;
 float yProj = 0.0;
 float zProj = 0.0;
@@ -45,6 +45,11 @@ int tankTurretID;
 int tankMainGunID;
 int tankSecondaryGunID;
 int tankWheelID;
+bool intersectTankBody = false;
+bool intersectTankTurret = false;
+bool intersectTankMainGun = false;
+bool intersectTankSecondaryGun = false;
+
 
 //prototypes for our callback functions
 void draw(void);    //our drawing routine
@@ -89,6 +94,7 @@ int main(int argc, char *argv[])
   //this loop won't terminate until the user exits the 
   //application
   glutMainLoop();
+  gluDeleteQuadric(p);
   return 0;
 }
 
@@ -140,33 +146,32 @@ void load_tank_objs(void)
   glNewList(tankWheelID, GL_COMPILE);
 	drawObj(tankWheel);
   glEndList();
-
-  //boundingSphereWheel = MyBoundingSphere(tankWheel);
 }
 
 void draw_tank(float x, float y, float z) {
-	GLUquadricObj *p = gluNewQuadric();
 
 	glPushMatrix();
 		glTranslatef(x,y,z);
 		glScalef(0.1,0.1,0.1);		//reduce the size of the tank on screen
-		glCallList(tankBodyID);
+
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		//Draw projectile
-		glPointSize(1.0);
-		glColor3f(1.0, 1.0, 1.0);
 		glPushMatrix();
-		glTranslatef(0.0, 0.0, zProj);
-		glBegin(GL_POINTS);
-		glVertex2f(xProj, yProj);
-		glEnd();
+		glColor3f(1.0, 0.0, 0.0);
+		glTranslatef (xProj, yProj, zProj);
+		glutSolidSphere(5.0, 50, 50);
 		glPopMatrix();
+		glFlush();
 
 		//Use your own draw code here to draw the rest of the tank
 		//Here's the code for each individual part
 		//Each part is placed with respect to the origin
 		//you'll need to add in glPushMatrix/glTranslatef/glRotatef/glPopMatrix commands as necessary
 	
+		glColor3f(1.0, 1.0, 1.0);
+
+		glCallList(tankBodyID);
 
 		//draw tankTurret, rotate it with key 1&2
 		glPushMatrix();
@@ -180,45 +185,59 @@ void draw_tank(float x, float y, float z) {
 				glTranslatef(53.7, -102.3, 11.0);
 				glCallList(tankMainGunID);
 
-				//Draw boundingSphereTankMainGun
-				glPushMatrix();
-					glTranslatef(-53.7, 102.3, 55.0);
-					glEnable(GL_BLEND);
-					glBlendFunc(GL_ONE, GL_ONE);
-					gluSphere(p, boundingSphereTankMainGun.radians, 30, 30);
-					glDisable(GL_BLEND);
-				glPopMatrix();
+				if (intersectTankMainGun) {
+					//Draw boundingSphereTankMainGun
+					glPushMatrix();
+						glColor3f(0.0, 1.0, 0.0);
+						glTranslatef(-53.7, 102.3, 55.0);
+						glEnable(GL_BLEND);
+						glBlendFunc(GL_ONE, GL_ONE);
+						gluSphere(p, boundingSphereTankMainGun.radians, 30, 30);
+						glDisable(GL_BLEND);
+					glPopMatrix();
+					intersectTankMainGun = false;
+				}
 			glPopMatrix();
 
 			//draw tankSecondaryGun, rotate it with key 5&6
 			glPushMatrix();
+				glColor3f(1.0, 1.0, 1.0);
 				glTranslatef(-12.0, 16.5, -15.0);
 				glRotatef(secondaryGunRot, 0.0, 1.0, 0.0);
 				glTranslatef(0.0, 0.0, 11.0);
 				glCallList(tankSecondaryGunID);
 
-				//Draw boundingSphereTankSecondaryGun
-				glPushMatrix();
-					glTranslatef(0.0, 0.0, 11.0);
-					glEnable(GL_BLEND);
-					glBlendFunc(GL_ONE, GL_ONE);
-					gluSphere(p, boundingSphereTankSecondaryGun.radians, 30, 30);
-					glDisable(GL_BLEND);
-				glPopMatrix();
+				if (intersectTankSecondaryGun) {
+					glColor3f(0.0, 1.0, 0.0);
+					//Draw boundingSphereTankSecondaryGun
+					glPushMatrix();
+						glTranslatef(0.0, 0.0, 11.0);
+						glEnable(GL_BLEND);
+						glBlendFunc(GL_ONE, GL_ONE);
+						gluSphere(p, boundingSphereTankSecondaryGun.radians, 30, 30);
+						glDisable(GL_BLEND);
+					glPopMatrix();
+					intersectTankSecondaryGun = false;
+				}
 			glPopMatrix();
 
-			//Draw boundingSphereTankTurret
-			glPushMatrix();
-				glTranslatef(0.0, -12.6, 0.0);
-				glEnable(GL_BLEND);
-				glBlendFunc(GL_ONE, GL_ONE);
-				gluSphere(p, boundingSphereTankTurret.radians, 30, 30);
-				glDisable(GL_BLEND);
-			glPopMatrix();
+			if (intersectTankTurret) {
+				glColor3f(0.0, 0.0, 1.0);
+				//Draw boundingSphereTankTurret
+				glPushMatrix();
+					glTranslatef(0.0, -12.6, 0.0);
+					glEnable(GL_BLEND);
+					glBlendFunc(GL_ONE, GL_ONE);
+					gluSphere(p, boundingSphereTankTurret.radians, 30, 30);
+					glDisable(GL_BLEND);
+				glPopMatrix();
+				intersectTankTurret = false;
+			}
 		glPopMatrix();
 
 		//draw wheels, rotate them with key 7&8
 		glPushMatrix();
+			glColor3f(1.0, 1.0, 1.0);
 			glTranslatef(-23.5, -11.0, -57.0);
 			for (int i = 0; i < 14; i++) {
 				if (i == 7) { //draw the wheels on the opposite side
@@ -238,17 +257,19 @@ void draw_tank(float x, float y, float z) {
 			}
 		glPopMatrix();
 
-		//Draw boundingSphereTankBody
-		glPushMatrix();
-			glTranslatef(0.0, 0.0, 0.0);
-			glEnable(GL_BLEND);
-			glBlendFunc(GL_ONE, GL_ONE);
-			gluSphere(p, boundingSphereTankBody.radians, 30, 30);
-			glDisable(GL_BLEND);
-		glPopMatrix();
+		if (intersectTankBody) {
+			//Draw boundingSphereTankBody
+			glPushMatrix();
+				glColor3f(1.0, 1.0, 0.0);
+				glTranslatef(0.0, 0.0, 0.0);
+				glEnable(GL_BLEND);
+				glBlendFunc(GL_ONE, GL_ONE);
+				gluSphere(p, boundingSphereTankBody.radians, 30, 30);
+				glDisable(GL_BLEND);
+			glPopMatrix();
+			intersectTankBody = false;
+		}
 	glPopMatrix();
-
-	gluDeleteQuadric(p);
 
 	testIntersect(xProj, yProj, zProj);
 	std::cout << "xProj: " << xProj << std::endl;
@@ -274,21 +295,23 @@ void drawObj(ObjMesh *pMesh) {
 }
 
 void testIntersect(float x, float y, float z) {
+	std::cout << sqrt(pow(boundingSphereTankMainGun.position.x + 53.7 - x, 2) + pow(boundingSphereTankMainGun.position.y - 108.0 - y, 2) + pow(boundingSphereTankMainGun.position.z - z, 2));
 
 	if (sqrt(pow(boundingSphereTankBody.position.x - x, 2) + pow(boundingSphereTankBody.position.y - y, 2) + pow(boundingSphereTankBody.position.z - z, 2)) <= boundingSphereTankBody.radians) {
 		std::cout << "The point intersects the tank's body" << std::endl;
+		intersectTankBody = true;
 		if (sqrt(pow(boundingSphereTankTurret.position.x - x, 2) + pow(boundingSphereTankTurret.position.y - 10 - y, 2) + pow(boundingSphereTankTurret.position.z - z, 2)) <= boundingSphereTankTurret.radians) {
 			std::cout << "The point intersects the tank's turret" << std::endl;
-			if (sqrt(pow(boundingSphereTankMainGun.position.x - 53.7 - x, 2) + pow(boundingSphereTankMainGun.position.y + 102.3 - y, 2) + pow(boundingSphereTankMainGun.position.z + 55.0 - z, 2)) <= boundingSphereTankMainGun.radians) {
+			intersectTankTurret = true;
+			if (sqrt(pow(boundingSphereTankMainGun.position.x + 53.7 - x, 2) + pow(boundingSphereTankMainGun.position.y - 108.0 - y, 2) + pow(boundingSphereTankMainGun.position.z - z, 2)) <= boundingSphereTankMainGun.radians) {
 				std::cout << "The point intersects the tank's main gun" << std::endl;
+				intersectTankMainGun = true;
 			}
-			if (sqrt(pow(boundingSphereTankSecondaryGun.position.x - x, 2) + pow(boundingSphereTankSecondaryGun.position.y - y, 2) + pow(boundingSphereTankSecondaryGun.position.z + 11 - z, 2)) <= boundingSphereTankSecondaryGun.radians) {
+			if (sqrt(pow(boundingSphereTankSecondaryGun.position.x - x, 2) + pow(boundingSphereTankSecondaryGun.position.y + 20 - y, 2) + pow(boundingSphereTankSecondaryGun.position.z - z, 2)) <= boundingSphereTankSecondaryGun.radians) {
 				std::cout << "The point intersects the tank's secondary gun" << std::endl;
+				intersectTankSecondaryGun = true;
 			}
 		}
-		//if (sqrt(pow(boundingSphereTankWheel.position.x - x,2) + pow(boundingSphereTankWheel.position.y - y,2) + pow(boundingSphereTankWheel.position.z - z,2),2) < boundingSphereTankWheel.radians) {
-		//  std::cout << "The point intersects the tank's wheels" << std::endl;
-		//} 	
 	}
 	else {
 		std::cout << "The point doesn't intersect with the tank" << std::endl;
@@ -387,22 +410,22 @@ void key(unsigned char k, int x, int y)
 		wheelRot -= 2;
 		break;
 	case 'y': //move the projectile up
-		yProj -= 2;
+		yProj -= 1;
 		break;
 	case 'u': //move the projectile down
-		yProj += 2;
+		yProj += 1;
 		break;
 	case 'h': //move the projectile left
-		xProj += 2;
+		xProj += 1;
 		break;
 	case 'j': //move the projectile right
-		xProj -= 2;
+		xProj -= 1;
 		break;
 	case 'n': //move the projectile forward
-		zProj += 2;
+		zProj += 1;
 		break;
 	case 'm': //move the projectile backward
-		zProj -= 2;
+		zProj -= 1;
 		break;
     case 27: //27 is the ASCII code for the ESCAPE key
       exit(0);
