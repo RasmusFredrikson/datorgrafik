@@ -13,7 +13,6 @@
 #include <mmsystem.h>
 
 #include "myboundingsphere.h"
-#include "myvector.h"
 #include "mymatrix.h"
 #include "objloader.h"
 #include "particleSystem.h"
@@ -28,8 +27,8 @@ using namespace MyMathLibrary;
 
 
 //define the particle systems
-int g_nActiveSystem = 2;
-CParticleSystem *g_pParticleSystems[1];
+int g_nActiveSystem = 0;
+//CParticleSystem *g_pParticleSystems[7];
 void initParticles(void);
 float  g_fElpasedTime;
 double g_dCurTime;
@@ -82,7 +81,7 @@ void load_tank_objs(void);
 void drawObj(ObjMesh*);
 void testIntersectPoint(float, float, float);
 void testIntersectLine();
-MyVector findClosestPointAlongLine(MyPosition);
+MyPosition findClosestPointAlongLine(MyPosition);
 
 
 //our main routine
@@ -122,56 +121,57 @@ int main(int argc, char *argv[])
   return 0;
 }
 
-void load_tank_objs(void)
-{
-  missileLineFrom.x = missileLineFrom.y = missileLineFrom.z = 50;
+void load_tank_objs(void) {
+	missileLineFrom.x = 50;
+	missileLineFrom.y = 50;
+	missileLineFrom.z = 50;
 
-  tankBody = LoadOBJ(".\\tankobjs\\tankbody.obj");
-  tankTurret = LoadOBJ(".\\tankobjs\\tankturret.obj");
-  tankMainGun = LoadOBJ(".\\tankobjs\\tankmaingun.obj");
-  tankSecondaryGun = LoadOBJ(".\\tankobjs\\tanksecondarygun.obj");
-  tankWheel = LoadOBJ(".\\tankobjs\\tankwheel.obj");
-  SetTextures(tankBody->m_iMeshID, NULL, ".\\tankobjs\\texture.tga");
+	tankBody = LoadOBJ(".\\tankobjs\\tankbody.obj");
+	tankTurret = LoadOBJ(".\\tankobjs\\tankturret.obj");
+	tankMainGun = LoadOBJ(".\\tankobjs\\tankmaingun.obj");
+	tankSecondaryGun = LoadOBJ(".\\tankobjs\\tanksecondarygun.obj");
+	tankWheel = LoadOBJ(".\\tankobjs\\tankwheel.obj");
+	SetTextures(tankBody->m_iMeshID, NULL, ".\\tankobjs\\texture.tga");
   
-  //Load tankBody into display list
-  tankBodyID = glGenLists(1);
-  glNewList(tankBodyID, GL_COMPILE);
-	drawObj(tankBody);
-  glEndList();
+	//Load tankBody into display list
+	tankBodyID = glGenLists(1);
+	glNewList(tankBodyID, GL_COMPILE);
+		drawObj(tankBody);
+	glEndList();
 
-  boundingSphereTankBody = MyBoundingSphere(tankBody);
+	boundingSphereTankBody = MyBoundingSphere(tankBody);
 
-  //Load tankTurret into display list
-  tankTurretID = glGenLists(1);
-  glNewList(tankTurretID, GL_COMPILE);
-	drawObj(tankTurret);
-  glEndList();
+	//Load tankTurret into display list
+	tankTurretID = glGenLists(1);
+	glNewList(tankTurretID, GL_COMPILE);
+		drawObj(tankTurret);
+	glEndList();
 
-  boundingSphereTankTurret = MyBoundingSphere(tankTurret);
-
-
-  //Load tankMainGun into display list
-  tankMainGunID = glGenLists(1);
-  glNewList(tankMainGunID, GL_COMPILE);
-	drawObj(tankMainGun);
-  glEndList();
-
-  boundingSphereTankMainGun = MyBoundingSphere(tankMainGun);
-
-  //Load tankSecondaryGun into display list
-  tankSecondaryGunID = glGenLists(1);
-  glNewList(tankSecondaryGunID, GL_COMPILE);
-	drawObj(tankSecondaryGun);
-  glEndList();
-
-  boundingSphereTankSecondaryGun = MyBoundingSphere(tankSecondaryGun);
+	boundingSphereTankTurret = MyBoundingSphere(tankTurret);
 
 
-  //Load tankWheel into display list
-  tankWheelID = glGenLists(1);
-  glNewList(tankWheelID, GL_COMPILE);
-	drawObj(tankWheel);
-  glEndList();
+	//Load tankMainGun into display list
+	tankMainGunID = glGenLists(1);
+	glNewList(tankMainGunID, GL_COMPILE);
+		drawObj(tankMainGun);
+	glEndList();
+
+	boundingSphereTankMainGun = MyBoundingSphere(tankMainGun);
+
+	//Load tankSecondaryGun into display list
+	tankSecondaryGunID = glGenLists(1);
+	glNewList(tankSecondaryGunID, GL_COMPILE);
+		drawObj(tankSecondaryGun);
+	glEndList();
+
+	boundingSphereTankSecondaryGun = MyBoundingSphere(tankSecondaryGun);
+
+
+	//Load tankWheel into display list
+	tankWheelID = glGenLists(1);
+	glNewList(tankWheelID, GL_COMPILE);
+		drawObj(tankWheel);
+	glEndList();
 }
 
 void draw_tank(float x, float y, float z) {
@@ -180,10 +180,13 @@ void draw_tank(float x, float y, float z) {
 	testIntersectLine();
 
 	glPushMatrix();
+
 		glTranslatef(x,y,z);
 		glScalef(0.1,0.1,0.1);		//reduce the size of the tank on screen
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
 
 		//draw missileLine
 		glLineWidth(3.0);
@@ -201,6 +204,63 @@ void draw_tank(float x, float y, float z) {
 		glTranslatef (xProj, yProj, zProj);
 		glutSolidSphere(5.0, 50, 50);
 		glPopMatrix();
+		glFlush();
+
+		glPushMatrix();
+		glTranslatef(0.0, 0.0, -2.0); //move the camera back to view the scene
+									  //
+									  // Enabling GL_DEPTH_TEST and setting glDepthMask to GL_FALSE makes the 
+									  // Z-Buffer read-only, which helps remove graphical artifacts generated 
+									  // from  rendering a list of particles that haven't been sorted by 
+									  // distance to the eye.
+									  //
+									  // Enabling GL_BLEND and setting glBlendFunc to GL_DST_ALPHA with GL_ONE 
+									  // allows particles, which overlap, to alpha blend with each other 
+									  // correctly.
+									  //
+
+		glEnable(GL_DEPTH_TEST);
+		glDepthMask(GL_FALSE);
+
+		//
+		// Render particle system
+		//
+
+		//RENDER THE PARTICLES
+		//better to try a test render first - this does not use more advanced
+		//features and helps verify that the basic system is working
+		//It is possible that Point Sprites may not be supported by your
+		//graphics card, particularly if it is an older type
+		bool doTestRender = false;
+
+		if (doTestRender)
+		{
+			glDisable(GL_TEXTURE_2D);
+			glDisable(GL_BLEND);
+			//g_pParticleSystems[g_nActiveSystem]->RenderSimple();
+		}
+		else
+		{
+			glEnable(GL_DEPTH_TEST);
+			glDepthMask(GL_FALSE);
+			glEnable(GL_TEXTURE_2D);
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+
+			//specify blending function here using glBlendFunc
+
+			//glBindTexture(GL_TEXTURE_2D, g_pParticleSystems[g_nActiveSystem]->GetTextureID());
+			//g_pParticleSystems[g_nActiveSystem]->Render();
+		}
+
+		//
+		// Reset OpenGL states...
+		//
+		glDepthMask(GL_TRUE);
+		glDisable(GL_BLEND);
+
+		glPopMatrix();
+		//flush what we've drawn to the buffer
 		glFlush();
 
 		//Use your own draw code here to draw the rest of the tank
@@ -336,7 +396,7 @@ void testIntersectPoint(float x, float y, float z) {
 	if (sqrt(pow(boundingSphereTankBody.position.x - x, 2) + pow(boundingSphereTankBody.position.y - y, 2) + pow(boundingSphereTankBody.position.z - z, 2)) <= boundingSphereTankBody.radians) {
 		std::cout << "The point intersects the tank's body" << std::endl;
 		intersectTankBody = true;
-		if (sqrt(pow(boundingSphereTankTurret.position.x - x, 2) + pow(boundingSphereTankTurret.position.y - 10 - y, 2) + pow(boundingSphereTankTurret.position.z - z, 2)) <= boundingSphereTankTurret.radians) {
+		if (sqrt(pow(boundingSphereTankTurret.position.x - x, 2) + pow(boundingSphereTankTurret.position.y - 10 - y, 2) + pow(boundingSphereTankTurret.position.z + 55 - z, 2)) <= boundingSphereTankTurret.radians) {
 			std::cout << "The point intersects the tank's turret" << std::endl;
 			intersectTankTurret = true;
 			if (sqrt(pow(boundingSphereTankMainGun.position.x + 53.7 - x, 2) + pow(boundingSphereTankMainGun.position.y - 108.0 - y, 2) + pow(boundingSphereTankMainGun.position.z - z, 2)) <= boundingSphereTankMainGun.radians) {
@@ -355,7 +415,7 @@ void testIntersectPoint(float x, float y, float z) {
 }
 
 void testIntersectLine() {
-	MyVector closestPoint = findClosestPointAlongLine(boundingSphereTankBody.position);
+	MyPosition closestPoint = findClosestPointAlongLine(boundingSphereTankBody.position);
 	if (sqrt(pow(boundingSphereTankBody.position.x - closestPoint.x, 2) + pow(boundingSphereTankBody.position.y - closestPoint.y, 2) + pow(boundingSphereTankBody.position.z - closestPoint.z, 2)) <= boundingSphereTankBody.radians) {
 		std::cout << "The line intersects the tank's body" << std::endl;
 		intersectTankBody = true;
@@ -364,7 +424,7 @@ void testIntersectLine() {
 			std::cout << "The line intersects the tank's turret" << std::endl;
 			intersectTankTurret = true;
 			closestPoint = findClosestPointAlongLine(boundingSphereTankMainGun.position);
-			if (sqrt(pow(boundingSphereTankMainGun.position.x + 53.7 - closestPoint.x, 2) + pow(boundingSphereTankMainGun.position.y - 108.0 - closestPoint.y, 2) + pow(boundingSphereTankMainGun.position.z - closestPoint.z, 2)) <= boundingSphereTankMainGun.radians) {
+			if (sqrt(pow(boundingSphereTankMainGun.position.x + 53.7 - closestPoint.x, 2) + pow(boundingSphereTankMainGun.position.y - 108.0 - closestPoint.y, 2) + pow(boundingSphereTankMainGun.position.z - 100 - closestPoint.z, 2)) <= boundingSphereTankMainGun.radians) {
 				std::cout << "The line intersects the tank's main gun" << std::endl;
 				intersectTankMainGun = true;
 			}
@@ -380,14 +440,17 @@ void testIntersectLine() {
 	}
 }
 
-MyVector findClosestPointAlongLine(MyPosition tankPartOrigin) {
+MyPosition findClosestPointAlongLine(MyPosition tankPartOrigin) {
 	missileLine.normalise();
 	MyVector v;
 	v.x = tankPartOrigin.x - missileLineFrom.x;
 	v.y = tankPartOrigin.y - missileLineFrom.y;
 	v.z = tankPartOrigin.z - missileLineFrom.z;
 	float w = missileLine.getDotProduct(v);
-	MyVector r((missileLine.x * w), (missileLine.y * w), (missileLine.z * w));
+	MyPosition r;
+	r.x = missileLine.x * w; 
+	r.y = missileLine.y * w; 
+	r.z = missileLine.z * w;
 	return r;
 };
 
