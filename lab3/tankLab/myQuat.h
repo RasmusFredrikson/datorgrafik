@@ -1,3 +1,6 @@
+#ifndef MYQUAT
+#define MYQUAT
+
 //Introductory quaternion class
 #include <math.h>
 #include "myvector.h"
@@ -31,3 +34,5 @@ class MyQuat
 
 
 }
+
+#endif

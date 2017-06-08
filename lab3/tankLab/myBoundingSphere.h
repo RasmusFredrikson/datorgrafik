@@ -1,4 +1,6 @@
-//Introductory quaternion class
+#ifndef MYBOUNDINGSPHERE
+#define MYBOUNDINGSPHERE
+
 #include <math.h>
 #include "myvector.h"
 #include "mymatrix.h"
@@ -22,3 +24,5 @@ namespace MyMathLibrary
 
 
 }
+
+#endif

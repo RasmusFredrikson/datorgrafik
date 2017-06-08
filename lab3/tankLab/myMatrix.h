@@ -1,3 +1,6 @@
+#ifndef MYMATRIX
+#define MYMATRIX
+
 //Introductory matrix class
 #include <math.h>
 
@@ -33,3 +36,5 @@ class MyMatrix
 
 
 }
+
+#endif

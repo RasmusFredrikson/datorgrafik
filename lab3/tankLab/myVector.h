@@ -1,3 +1,6 @@
+#ifndef MYVECTOR
+#define MYVECTOR
+
 //Introductory vector class
 #include <math.h>
 
@@ -48,3 +51,5 @@ class MyVector
 
 
 }
+
+#endif
