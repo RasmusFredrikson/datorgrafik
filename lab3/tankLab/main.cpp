@@ -36,9 +36,9 @@ MyBoundingSphere boundingSphereTankBody;
 MyBoundingSphere boundingSphereTankTurret;
 MyBoundingSphere boundingSphereTankMainGun;
 MyBoundingSphere boundingSphereTankSecondaryGun;
-float xProj = 0.0;
-float yProj = 0.0;
-float zProj = 0.0;
+float xProj = -20.0;
+float yProj = -35.0;
+float zProj = 100.0;
 MyVector missileLine = MyVector(200,200,200);
 MyPosition missileLineFrom;
 
@@ -59,6 +59,7 @@ bool intersectTankBody = false;
 bool intersectTankTurret = false;
 bool intersectTankMainGun = false;
 bool intersectTankSecondaryGun = false;
+bool pointIntersectTankBody = false;
 
 
 //prototypes for our callback functions
@@ -179,16 +180,12 @@ void load_tank_objs(void) {
 void draw_tank(float x, float y, float z) {
 
 	testIntersectPoint(xProj, yProj, zProj);
-	testIntersectLine();
+	//testIntersectLine(); Uncomment to see line intersection
 
 	glPushMatrix();
-
+	
 		glTranslatef(x,y,z);
 		glScalef(0.1,0.1,0.1);		//reduce the size of the tank on screen
-
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-
 
 		//draw missileLine
 		glLineWidth(3.0);
@@ -217,6 +214,28 @@ void draw_tank(float x, float y, float z) {
 		glColor3f(1.0, 1.0, 1.0);
 
 		glCallList(tankBodyID);
+
+		//draw wheels, rotate them with key 7&8
+		glPushMatrix();
+		glColor3f(1.0, 1.0, 1.0);
+		glTranslatef(-23.5, -11.0, -57.0);
+		for (int i = 0; i < 14; i++) {
+			if (i == 7) { //draw the wheels on the opposite side
+				glTranslatef(47.0, 0.0, -16.0);
+				glRotatef(180.0, 0.0, 1.0, 0.0);
+			}
+			glPushMatrix();
+			if (i > 6) {
+				glRotatef(-wheelRot, 1.0, 0.0, 0.0);
+			}
+			else {
+				glRotatef(wheelRot, 1.0, 0.0, 0.0);
+			}
+			glCallList(tankWheelID);
+			glPopMatrix();
+			glTranslatef(0.0, 0.0, 16.0);
+		}
+		glPopMatrix();
 
 		//draw tankTurret, rotate it with key 1&2
 		glPushMatrix();
@@ -280,28 +299,6 @@ void draw_tank(float x, float y, float z) {
 			}
 		glPopMatrix();
 
-		//draw wheels, rotate them with key 7&8
-		glPushMatrix();
-			glColor3f(1.0, 1.0, 1.0);
-			glTranslatef(-23.5, -11.0, -57.0);
-			for (int i = 0; i < 14; i++) {
-				if (i == 7) { //draw the wheels on the opposite side
-					glTranslatef(47.0, 0.0, -16.0);
-					glRotatef(180.0, 0.0, 1.0, 0.0);
-				}
-				glPushMatrix();
-					if (i > 6) {
-						glRotatef(-wheelRot, 1.0, 0.0, 0.0);
-					}
-					else {
-						glRotatef(wheelRot, 1.0, 0.0, 0.0);
-					}
-					glCallList(tankWheelID);
-				glPopMatrix();
-				glTranslatef(0.0, 0.0, 16.0);
-			}
-		glPopMatrix();
-
 		if (intersectTankBody) {
 			//Draw boundingSphereTankBody
 			glPushMatrix();
@@ -319,8 +316,6 @@ void draw_tank(float x, float y, float z) {
 	std::cout << "xProj: " << xProj << std::endl;
 	std::cout << "yProj: " << yProj << std::endl;
 	std::cout << "zProj: " << zProj << std::endl;
-
-	glPushMatrix();
 }
 
 void drawObj(ObjMesh *pMesh) {
@@ -343,6 +338,7 @@ void testIntersectPoint(float x, float y, float z) {
 	if (sqrt(pow(boundingSphereTankBody.position.x - x, 2) + pow(boundingSphereTankBody.position.y - y, 2) + pow(boundingSphereTankBody.position.z - z, 2)) <= boundingSphereTankBody.radians) {
 		std::cout << "The point intersects the tank's body" << std::endl;
 		intersectTankBody = true;
+		pointIntersectTankBody = true;
 		if (sqrt(pow(boundingSphereTankTurret.position.x - x, 2) + pow(boundingSphereTankTurret.position.y - 10 - y, 2) + pow(boundingSphereTankTurret.position.z + 55 - z, 2)) <= boundingSphereTankTurret.radians) {
 			std::cout << "The point intersects the tank's turret" << std::endl;
 			intersectTankTurret = true;
@@ -415,96 +411,70 @@ void initParticles(void)
 	g_pParticleSystems[0] = new CParticleSystem();
 
 	g_pParticleSystems[0]->SetTexture("particle.bmp");
-	g_pParticleSystems[0]->SetMaxParticles(2048);
+	g_pParticleSystems[0]->SetMaxParticles(5000);
 	g_pParticleSystems[0]->SetNumToRelease(10);
-	g_pParticleSystems[0]->SetReleaseInterval(0.1f);
-	g_pParticleSystems[0]->SetLifeCycle(0.7f);
+	g_pParticleSystems[0]->SetReleaseInterval(0.05f);
+	g_pParticleSystems[0]->SetLifeCycle(1.0f);
 	g_pParticleSystems[0]->SetSize(20.0f);
 	g_pParticleSystems[0]->SetColor(MyVector(1.0f, 0.0f, 0.0f));
 	g_pParticleSystems[0]->SetPosition(MyVector(0.0f, 0.0f, 0.0f));
 	g_pParticleSystems[0]->SetVelocity(MyVector(0.0f, 0.0f, 0.0f));
 
 
-	g_pParticleSystems[0]->SetVelocityVar(1.0f);
+	g_pParticleSystems[0]->SetVelocityVar(10.0f);
 
 	g_pParticleSystems[0]->Init();
 }
 
 //draw callback function - this is called by glut whenever the 
 //window needs to be redrawn
-void draw(void)
-{
-  //clear the current window
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  //make changes to the modelview matrix
-  glMatrixMode(GL_MODELVIEW);
-  //initialise the modelview matrix to the identity matrix
-  glLoadIdentity();
+void draw(void) {
+	//clear the current window
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//make changes to the modelview matrix
+	glMatrixMode(GL_MODELVIEW);
+	//initialise the modelview matrix to the identity matrix
+	glLoadIdentity();
 
-  glTranslatef(xPos,yPos,zPos);
+	glTranslatef(xPos,yPos,zPos);
 
-  glRotatef(yRot,0.0,1.0,0.0);
+	glRotatef(yRot,0.0,1.0,0.0);
+ 
+	if (pointIntersectTankBody) {
 
-	//
-	// Enabling GL_DEPTH_TEST and setting glDepthMask to GL_FALSE makes the 
-	// Z-Buffer read-only, which helps remove graphical artifacts generated 
-	// from  rendering a list of particles that haven't been sorted by 
-	// distance to the eye.
-	//
-	// Enabling GL_BLEND and setting glBlendFunc to GL_DST_ALPHA with GL_ONE 
-	// allows particles, which overlap, to alpha blend with each other 
-	// correctly.
-	//
+		glPushMatrix();
+			glScalef(0.1, 0.1, 0.1);
+			glTranslatef(xProj, yProj, zProj); //center the particle on the projectile
 
-  glEnable(GL_DEPTH_TEST);
-  glDepthMask(GL_FALSE);
+			//RENDER THE PARTICLES
 
-  //
-  // Render particle system
-  //
+			glEnable(GL_DEPTH_TEST);
+			glDepthMask(GL_FALSE);
+			glEnable(GL_TEXTURE_2D);
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
-  //RENDER THE PARTICLES
-  //better to try a test render first - this does not use more advanced
-  //features and helps verify that the basic system is working
-  //It is possible that Point Sprites may not be supported by your
-  //graphics card, particularly if it is an older type
-  bool doTestRender = false;
+			//glBindTexture(GL_TEXTURE_2D, g_pParticleSystems[g_nActiveSystem]->GetTextureID());
+			g_pParticleSystems[g_nActiveSystem]->Render();
 
-  if (doTestRender)
-  {
-	  glDisable(GL_TEXTURE_2D);
-	  glDisable(GL_BLEND);
-	  //g_pParticleSystems[g_nActiveSystem]->RenderSimple();
-  }
-  else
-  {
-	  glEnable(GL_DEPTH_TEST);
-	  glDepthMask(GL_FALSE);
-	  glEnable(GL_TEXTURE_2D);
-	  glEnable(GL_BLEND);
-	  glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
-	  //specify blending function here using glBlendFunc
+			//
+			// Reset OpenGL states...
+			//
 
-	  glBindTexture(GL_TEXTURE_2D, g_pParticleSystems[g_nActiveSystem]->GetTextureID());
-	  g_pParticleSystems[g_nActiveSystem]->Render();
-  }
+			glDepthMask(GL_TRUE);
+			glDisable(GL_BLEND);
+		glPopMatrix();
+		pointIntersectTankBody = false;
+	}
 
-  //
-  // Reset OpenGL states...
-  //
-  glDepthMask(GL_TRUE);
-  glDisable(GL_BLEND);
+	//draw the tank on screen at a position
+	draw_tank(0.0, 0.0, 0.0);
 
-  glPopMatrix();
-
-  //draw the tank on screen at a position
-  draw_tank(0.0, 0.0, 0.0);
-
-  //flush what we've drawn to the buffer
-  glFlush();
-  //swap the back buffer with the front buffer
-  glutSwapBuffers();
+	//flush what we've drawn to the buffer
+	glFlush();
+	//swap the back buffer with the front buffer
+	glutSwapBuffers();
 }
 
 //idle callback function - this is called when there is nothing 
@@ -512,12 +482,12 @@ void draw(void)
 void idle(void) {
 	//this is a good place to do animation
 
-	//g_dCurTime = timeGetTime();
-	//g_fElpasedTime = (float)((g_dCurTime - g_dLastTime) * 0.001);
-	//g_dLastTime = g_dCurTime;
+	g_dCurTime = timeGetTime();
+	g_fElpasedTime = (float)((g_dCurTime - g_dLastTime) * 0.001);
+	g_dLastTime = g_dCurTime;
 
-	//g_pParticleSystems[g_nActiveSystem]->Update((float)g_fElpasedTime);
-	//glutPostRedisplay();
+	g_pParticleSystems[g_nActiveSystem]->Update((float)g_fElpasedTime);
+	glutPostRedisplay();
 }
 
 //key callback function - called whenever the user presses a 
