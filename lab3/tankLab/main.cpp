@@ -26,16 +26,6 @@
 using namespace MyMathLibrary;
 
 
-//define the particle systems
-int g_nActiveSystem = 0;
-//CParticleSystem *g_pParticleSystems[7];
-void initParticles(void);
-float  g_fElpasedTime;
-double g_dCurTime;
-double g_dLastTime;
-
-
-
 ObjMesh* tankBody;
 ObjMesh* tankTurret;
 ObjMesh* tankMainGun;
@@ -84,6 +74,15 @@ void testIntersectLine();
 MyPosition findClosestPointAlongLine(MyPosition);
 
 
+//define the particle systems
+int g_nActiveSystem = 0;
+CParticleSystem *g_pParticleSystems[1];
+void initParticles(void);
+float  g_fElpasedTime;
+double g_dCurTime;
+double g_dLastTime;
+
+
 //our main routine
 int main(int argc, char *argv[])
 {
@@ -98,6 +97,9 @@ int main(int argc, char *argv[])
 
   //run our own drawing initialisation routine
   init_drawing();
+
+  initParticles();
+
 
   load_tank_objs();
 
@@ -206,62 +208,6 @@ void draw_tank(float x, float y, float z) {
 		glPopMatrix();
 		glFlush();
 
-		glPushMatrix();
-		glTranslatef(0.0, 0.0, -2.0); //move the camera back to view the scene
-									  //
-									  // Enabling GL_DEPTH_TEST and setting glDepthMask to GL_FALSE makes the 
-									  // Z-Buffer read-only, which helps remove graphical artifacts generated 
-									  // from  rendering a list of particles that haven't been sorted by 
-									  // distance to the eye.
-									  //
-									  // Enabling GL_BLEND and setting glBlendFunc to GL_DST_ALPHA with GL_ONE 
-									  // allows particles, which overlap, to alpha blend with each other 
-									  // correctly.
-									  //
-
-		glEnable(GL_DEPTH_TEST);
-		glDepthMask(GL_FALSE);
-
-		//
-		// Render particle system
-		//
-
-		//RENDER THE PARTICLES
-		//better to try a test render first - this does not use more advanced
-		//features and helps verify that the basic system is working
-		//It is possible that Point Sprites may not be supported by your
-		//graphics card, particularly if it is an older type
-		bool doTestRender = false;
-
-		if (doTestRender)
-		{
-			glDisable(GL_TEXTURE_2D);
-			glDisable(GL_BLEND);
-			//g_pParticleSystems[g_nActiveSystem]->RenderSimple();
-		}
-		else
-		{
-			glEnable(GL_DEPTH_TEST);
-			glDepthMask(GL_FALSE);
-			glEnable(GL_TEXTURE_2D);
-			glEnable(GL_BLEND);
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-
-			//specify blending function here using glBlendFunc
-
-			//glBindTexture(GL_TEXTURE_2D, g_pParticleSystems[g_nActiveSystem]->GetTextureID());
-			//g_pParticleSystems[g_nActiveSystem]->Render();
-		}
-
-		//
-		// Reset OpenGL states...
-		//
-		glDepthMask(GL_TRUE);
-		glDisable(GL_BLEND);
-
-		glPopMatrix();
-		//flush what we've drawn to the buffer
-		glFlush();
 
 		//Use your own draw code here to draw the rest of the tank
 		//Here's the code for each individual part
@@ -374,6 +320,7 @@ void draw_tank(float x, float y, float z) {
 	std::cout << "yProj: " << yProj << std::endl;
 	std::cout << "zProj: " << zProj << std::endl;
 
+	glPushMatrix();
 }
 
 void drawObj(ObjMesh *pMesh) {
@@ -454,6 +401,35 @@ MyPosition findClosestPointAlongLine(MyPosition tankPartOrigin) {
 	return r;
 };
 
+void initParticles(void)
+{
+	g_dCurTime = timeGetTime();
+	g_fElpasedTime = (float)((g_dCurTime - g_dLastTime) * 0.001);
+	g_dLastTime = g_dCurTime;
+
+
+	//
+	// Omni-directiional emission expanding into space with no air resistence
+	//
+
+	g_pParticleSystems[0] = new CParticleSystem();
+
+	g_pParticleSystems[0]->SetTexture("particle.bmp");
+	g_pParticleSystems[0]->SetMaxParticles(2048);
+	g_pParticleSystems[0]->SetNumToRelease(10);
+	g_pParticleSystems[0]->SetReleaseInterval(0.1f);
+	g_pParticleSystems[0]->SetLifeCycle(0.7f);
+	g_pParticleSystems[0]->SetSize(20.0f);
+	g_pParticleSystems[0]->SetColor(MyVector(1.0f, 0.0f, 0.0f));
+	g_pParticleSystems[0]->SetPosition(MyVector(0.0f, 0.0f, 0.0f));
+	g_pParticleSystems[0]->SetVelocity(MyVector(0.0f, 0.0f, 0.0f));
+
+
+	g_pParticleSystems[0]->SetVelocityVar(1.0f);
+
+	g_pParticleSystems[0]->Init();
+}
+
 //draw callback function - this is called by glut whenever the 
 //window needs to be redrawn
 void draw(void)
@@ -469,6 +445,59 @@ void draw(void)
 
   glRotatef(yRot,0.0,1.0,0.0);
 
+	//
+	// Enabling GL_DEPTH_TEST and setting glDepthMask to GL_FALSE makes the 
+	// Z-Buffer read-only, which helps remove graphical artifacts generated 
+	// from  rendering a list of particles that haven't been sorted by 
+	// distance to the eye.
+	//
+	// Enabling GL_BLEND and setting glBlendFunc to GL_DST_ALPHA with GL_ONE 
+	// allows particles, which overlap, to alpha blend with each other 
+	// correctly.
+	//
+
+  glEnable(GL_DEPTH_TEST);
+  glDepthMask(GL_FALSE);
+
+  //
+  // Render particle system
+  //
+
+  //RENDER THE PARTICLES
+  //better to try a test render first - this does not use more advanced
+  //features and helps verify that the basic system is working
+  //It is possible that Point Sprites may not be supported by your
+  //graphics card, particularly if it is an older type
+  bool doTestRender = false;
+
+  if (doTestRender)
+  {
+	  glDisable(GL_TEXTURE_2D);
+	  glDisable(GL_BLEND);
+	  //g_pParticleSystems[g_nActiveSystem]->RenderSimple();
+  }
+  else
+  {
+	  glEnable(GL_DEPTH_TEST);
+	  glDepthMask(GL_FALSE);
+	  glEnable(GL_TEXTURE_2D);
+	  glEnable(GL_BLEND);
+	  glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+
+	  //specify blending function here using glBlendFunc
+
+	  glBindTexture(GL_TEXTURE_2D, g_pParticleSystems[g_nActiveSystem]->GetTextureID());
+	  g_pParticleSystems[g_nActiveSystem]->Render();
+  }
+
+  //
+  // Reset OpenGL states...
+  //
+  glDepthMask(GL_TRUE);
+  glDisable(GL_BLEND);
+
+  glPopMatrix();
+
   //draw the tank on screen at a position
   draw_tank(0.0, 0.0, 0.0);
 
@@ -480,11 +509,15 @@ void draw(void)
 
 //idle callback function - this is called when there is nothing 
 //else to do
-void idle(void)
-{
-  //this is a good place to do animation
-  //since there are no animations in this test, we can leave 
-  //idle() empty
+void idle(void) {
+	//this is a good place to do animation
+
+	//g_dCurTime = timeGetTime();
+	//g_fElpasedTime = (float)((g_dCurTime - g_dLastTime) * 0.001);
+	//g_dLastTime = g_dCurTime;
+
+	//g_pParticleSystems[g_nActiveSystem]->Update((float)g_fElpasedTime);
+	//glutPostRedisplay();
 }
 
 //key callback function - called whenever the user presses a 
