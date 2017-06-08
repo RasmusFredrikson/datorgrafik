@@ -1,22 +1,39 @@
 #define WIN32_LEAN_AND_MEAN
 
+#pragma comment(lib, "glaux.lib")
 #pragma comment(lib, "opengl32.lib")
 #pragma comment(lib, "glu32.lib")
 #pragma comment(linker, "/subsystem:console")
 
+#include "stdlib.h"
+#include "stdio.h"
+#include <iostream>
+
 #include "windows.h"
+#include <mmsystem.h>
+
+#include "myboundingsphere.h"
+#include "myvector.h"
+#include "mymatrix.h"
+#include "objloader.h"
+#include "particleSystem.h"
 
 #include <gl/gl.h>            // standard OpenGL include
 #include <gl/glu.h>           // OpenGL utilties
 #include <glut.h>             // OpenGL utilties
 
-#include "myboundingsphere.h"
+
 
 using namespace MyMathLibrary;
 
-#include "stdlib.h"
-#include "stdio.h"
-#include <iostream>
+
+//define the particle systems
+int g_nActiveSystem = 2;
+CParticleSystem *g_pParticleSystems[1];
+void initParticles(void);
+float  g_fElpasedTime;
+double g_dCurTime;
+double g_dLastTime;
 
 
 
@@ -35,7 +52,6 @@ float yProj = 0.0;
 float zProj = 0.0;
 MyVector missileLine = MyVector(200,200,200);
 MyPosition missileLineFrom;
-//CParticleSystem *g_pParticleSystems[1];
 
 float zPos = -30.0;
 float yRot = 0.0;
