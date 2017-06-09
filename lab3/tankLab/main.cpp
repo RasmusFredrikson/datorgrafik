@@ -26,11 +26,17 @@
 using namespace MyMathLibrary;
 
 
-ObjMesh* tankBody;
-ObjMesh* tankTurret;
-ObjMesh* tankMainGun;
-ObjMesh* tankSecondaryGun;
-ObjMesh* tankWheel;
+ObjMesh* tankBody = NULL;
+ObjMesh* tankTurret = NULL;
+ObjMesh* tankMainGun = NULL;
+ObjMesh* tankSecondaryGun = NULL;
+ObjMesh* tankWheel = NULL;
+ObjMesh* tankBodyLow = NULL;
+ObjMesh* tankTurretLow = NULL;
+ObjMesh* tankMainGunLow = NULL;
+ObjMesh* tankSecondaryGunLow = NULL;
+ObjMesh* tankWheelLow = NULL;
+
 GLUquadricObj *p = gluNewQuadric();
 MyBoundingSphere boundingSphereTankBody;
 MyBoundingSphere boundingSphereTankTurret;
@@ -69,6 +75,7 @@ void key(unsigned char k, int x, int y);  //handle key presses
 void reshape(int width, int height);      //when the window is resized
 void init_drawing(void);                  //drawing intialisation
 void load_tank_objs(void);
+void load_low_detail_tank_objs(void);
 void drawObj(ObjMesh*);
 void testIntersectPoint(float, float, float);
 void testIntersectLine();
@@ -135,6 +142,12 @@ void load_tank_objs(void) {
 	tankSecondaryGun = LoadOBJ(".\\tankobjs\\tanksecondarygun.obj");
 	tankWheel = LoadOBJ(".\\tankobjs\\tankwheel.obj");
 	SetTextures(tankBody->m_iMeshID, NULL, ".\\tankobjs\\texture.tga");
+
+	tankBodyLow = LoadOBJ(".\\tankobjs\\tankBodyLow.obj");
+	tankTurretLow = LoadOBJ(".\\tankobjs\\tankTurretLow.obj");
+	tankMainGunLow = LoadOBJ(".\\tankobjs\\tankMainGunLow.obj");
+	tankSecondaryGunLow = LoadOBJ(".\\tankobjs\\tankSecondaryGunLow.obj");
+	tankWheelLow = LoadOBJ(".\\tankobjs\\tankWheelLow.obj");
   
 	//Load tankBody into display list
 	tankBodyID = glGenLists(1);
@@ -177,6 +190,69 @@ void load_tank_objs(void) {
 	glEndList();
 }
 
+//draw low detail version of the tank model
+void draw_tank_low(float x, float y, float z) {
+	
+	glDisable(GL_TEXTURE_2D); // disable lighting
+	glDisable(GL_LIGHTING); // disable texturing
+	glColor3ub(49, 41, 30); // select RGB color(49,41,30)
+	glPushMatrix();
+
+	glTranslatef(x, y, z);
+	glScalef(0.1, 0.1, 0.1);		//reduce the size of the tank on screen
+
+	//Use your own draw code here to draw the rest of the tank
+	//Here's the code for each individual part
+	//Each part is placed with respect to the origin
+	//you'll need to add in glPushMatrix/glTranslatef/glRotatef/glPopMatrix commands as necessary
+
+
+	DrawOBJ(tankBodyLow->m_iMeshID);
+	//draw wheels, rotate them with key 7&8
+	glPushMatrix();
+		glColor3ub(105, 105, 105);
+		glTranslatef(-25.5, -11.0, -57.0);
+		for (int i = 0; i < 14; i++) {
+			if (i == 7) { //draw the wheels on the opposite side
+				glTranslatef(52.0, 0.0, -16.0);
+				glRotatef(180.0, 0.0, 1.0, 0.0);
+			}
+			glPushMatrix();
+				if (i > 6) {
+					glRotatef(-wheelRot, 1.0, 0.0, 0.0);
+				}
+				else {
+					glRotatef(wheelRot, 1.0, 0.0, 0.0);
+				}
+				DrawOBJ(tankWheelLow->m_iMeshID);			glPopMatrix();
+			glTranslatef(0.0, 0.0, 16.0);
+		}
+		glPopMatrix();
+
+		glColor3ub(49, 41, 30);
+
+		//draw tankTurret, rotate it with key 1&2
+		glPushMatrix();
+			glRotatef(turretRot, 0.0, 1.0, 0.0);
+			glTranslatef(0.0, 14.0, 0.0);
+			DrawOBJ(tankTurretLow->m_iMeshID);			glColor3ub(50, 50, 50);
+			//draw tankMainGun, move it up and down with key 3&4
+			glPushMatrix();
+				glRotatef(mainGunRot, 1.0, 0.0, 0.0);
+				glTranslatef(53.7, -102.3, 11.0);
+				DrawOBJ(tankMainGunLow->m_iMeshID);			glPopMatrix();
+
+			//draw tankSecondaryGun, rotate it with key 5&6
+			glPushMatrix();
+				glTranslatef(-12.0, 16.5, -15.0);
+				glRotatef(secondaryGunRot, 0.0, 1.0, 0.0);
+				glTranslatef(0.0, 0.0, 11.0);
+				DrawOBJ(tankSecondaryGunLow->m_iMeshID);
+			glPopMatrix();
+		glPopMatrix();
+	glPopMatrix();
+}
+//draw high detail version of the tank model
 void draw_tank(float x, float y, float z) {
 
 	testIntersectPoint(xProj, yProj, zProj);
@@ -469,7 +545,8 @@ void draw(void) {
 	}
 
 	//draw the tank on screen at a position
-	draw_tank(0.0, 0.0, 0.0);
+	//draw_tank(0.0, 0.0, 0.0);
+	draw_tank_low(0.0, 0.0, 0.0);
 
 	//flush what we've drawn to the buffer
 	glFlush();
