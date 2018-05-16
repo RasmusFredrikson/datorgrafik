@@ -14,3 +14,11 @@ lab2/*/*.dll
 *.sln
 *include/
 *libs/
+
+#Project
+project/kthcourtyard/*.csproj
+project/kthcourtyard/*.sln
+project/kthcourtyard/Temp
+project/kthcourtyard/Library
+project/kthcourtyard/UnityPackageManager
+project/kthcourtyard/ProjectSettings/ProjectVersion.txt
