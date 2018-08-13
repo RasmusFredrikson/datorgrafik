@@ -1,9 +1,7 @@
 fileFormatVersion: 2
 guid: c32550c706463104f96f5149efd32bf4
-timeCreated: 1434806929
-licenseType: Free
 ModelImporter:
-  serializedVersion: 18
+  serializedVersion: 23
   fileIDToRecycleName:
     100000: Bench126
     100002: Bench152
@@ -11233,21 +11231,194 @@ ModelImporter:
     4304482: Bench280
     4304484: Hedge740
     4304486: Road1743
+    2186277476908879412: ImportLogs
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ASPHALT_0
+    second: {fileID: 2100000, guid: 1ab858c33f9e71a4a83c8534ba3ee066, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: BRICK_0
+    second: {fileID: 2100000, guid: 1e14355a00070ec4e9b8669f102a9365, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: BRIDGE_DEFAULT_0
+    second: {fileID: 2100000, guid: faa195f7bdb5d0544abe243cb5d0b6bb, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: BUILDING_DEFAULT_0
+    second: {fileID: 2100000, guid: 854d7211c1a78e7439774d4e81645497, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: BUS_STOP_SIGN_0
+    second: {fileID: 2100000, guid: 59028020cdf0906408d8f7fb106062f9, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: CONCRETE_0
+    second: {fileID: 2100000, guid: 84f8cdd7e1aec744d90750675518e56f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: EARTH_0
+    second: {fileID: 2100000, guid: 16805ae2c11a2804b90efa80433f8d8d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ENTRANCE_DEFAULT_0
+    second: {fileID: 2100000, guid: 3c6f5261ac8c0e942a3a5d690bcfe7c1, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: FENCE_DEFAULT_0
+    second: {fileID: 2100000, guid: 21c6787e2c345bc4d886d472adc4b64d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: GLASS_0
+    second: {fileID: 2100000, guid: fd0d84c1564359a4f85ce67772987f95, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: GRASS_0
+    second: {fileID: 2100000, guid: 747479ff08c1a5c46999209e71e5d68a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: GRAVEL_0
+    second: {fileID: 2100000, guid: 371aff899f11fd144aa8175b9e2686ef, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HEDGE_0
+    second: {fileID: 2100000, guid: 20fee71c03d14c444bbe78c26d890526, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MAT_0_0
+    second: {fileID: 2100000, guid: d5353cf672021df4cba6a0e7177673ff, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MAT_1_0
+    second: {fileID: 2100000, guid: 6060a90b19e1ae648a7f5eed7370f176, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MAT_2_0
+    second: {fileID: 2100000, guid: 0a5f29528f4bf584fb57c4ba0712ca94, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MAT_3_0
+    second: {fileID: 2100000, guid: 3e9072276cfcd764b92e775a39e9f4c5, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MAT_4_0
+    second: {fileID: 2100000, guid: abad08722a263c94fb78b7026316a1d5, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MAT_5_0
+    second: {fileID: 2100000, guid: 65431779413dd7143bc59f722cbbb50c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MAT_6_0
+    second: {fileID: 2100000, guid: 66e3df21924cc6345b295e04fe690480, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MAT_7_0
+    second: {fileID: 2100000, guid: 47bf003773fd695489247377d30a5d8e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MAT_8_0
+    second: {fileID: 2100000, guid: dce9db9803065b04aa846d3d6389dc12, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: PAVING_STONE_0
+    second: {fileID: 2100000, guid: b93c0b12cc0ee334dac5597b349ba2a6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ROAD_MARKING_DASHED_0
+    second: {fileID: 2100000, guid: da7d53ff683e83d49b4ea2adc38c7662, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ROOF_DEFAULT_0
+    second: {fileID: 2100000, guid: f5bca44019f91a64b90b69611f6cbe50, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: STEEL_0
+    second: {fileID: 2100000, guid: 348f03495517caf449a62a57a076864b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: STEPS_DEFAULT_0
+    second: {fileID: 2100000, guid: 329fc2e5ff13a8147a62458e4844865b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: TERRAIN_DEFAULT_0
+    second: {fileID: 2100000, guid: ff8d3e7e4dd4ea542a3e7a45222fc6b4, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: TUNNEL_DEFAULT_0
+    second: {fileID: 2100000, guid: c251a95524276c94284825ff97551fc3, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: WALL_DEFAULT_0
+    second: {fileID: 2100000, guid: 97cdcad5d9c381444ae151b6ea0bc106, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: WATER_0
+    second: {fileID: 2100000, guid: 6a561899471367c4dabfb68cead8c206, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: WOOD_0
+    second: {fileID: 2100000, guid: 2b3c67f6c0ec9774d945d4b9ab19499b, type: 2}
   materials:
     importMaterials: 1
     materialName: 0
     materialSearch: 1
+    materialLocation: 0
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
+    resampleCurves: 1
     optimizeGameObjects: 0
     motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
     animationCompression: 1
-    animationRotationError: .5
-    animationPositionError: .5
-    animationScaleError: .5
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
     animationWrapMode: 0
     extraExposedTransformPaths: []
+    extraUserProperties: []
     clipAnimations: []
     isReadable: 1
   meshes:
@@ -11255,38 +11426,51 @@ ModelImporter:
     globalScale: 1
     meshCompression: 0
     addColliders: 0
+    importVisibility: 0
     importBlendShapes: 1
+    importCameras: 0
+    importLights: 0
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
     optimizeMeshForGPU: 1
     keepQuads: 0
     weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
     secondaryUVPackMargin: 4
     useFileScale: 1
+    previousCalculatedGlobalScale: 1
+    hasPreviousCalculatedGlobalScale: 0
   tangentSpace:
     normalSmoothAngle: 60
-    splitTangentsAcrossUV: 1
     normalImportMode: 0
-    tangentImportMode: 1
+    tangentImportMode: 4
+    normalCalculationMode: 0
   importAnimation: 1
   copyAvatar: 0
   humanDescription:
+    serializedVersion: 2
     human: []
     skeleton: []
-    armTwist: .5
-    foreArmTwist: .5
-    upperLegTwist: .5
-    legTwist: .5
-    armStretch: .0500000007
-    legStretch: .0500000007
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
     feetSpacing: 0
     rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   animationType: 0
+  humanoidOversampling: 1
   additionalBone: 0
   userData: 
   assetBundleName: 
